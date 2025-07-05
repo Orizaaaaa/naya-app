@@ -78,7 +78,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-50 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      className={`absolute left-0 top-0 z-50 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
@@ -118,7 +118,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item Dashboard --> */}
-              <NavigationList icon={<MdDashboard size={19} />} title="Dasboard" pathname="/dashboard" />
+              <NavigationList icon={<MdDashboard size={24} />} title="Home" pathname="/dashboard" />
               <NavigationList icon={<LuBookPlus size={19} />} title="List Akun" pathname="/listAccount" />
               <NavigationList icon={<IoReceiptOutline size={19} />} title="Catat Transaksi" pathname="/catatTransaksi" />
               <NavigationList icon={<MdOutlineLibraryBooks size={19} />} title="Jurnal Umum" pathname="/jurnalUmum" />
