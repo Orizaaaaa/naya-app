@@ -52,7 +52,7 @@ const DropdownUser = () => {
         href="#"
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
+          <span className="block text-sm font-medium text-black dark:text-white ">
             {name ? capitalizeWords(name) : "User"}
           </span>
           <span className="block text-xs">
@@ -64,6 +64,7 @@ const DropdownUser = () => {
           <Image
             width={112}
             height={112}
+            // nanti profile di sini
             src={"/images/user/user-01.png"}
             style={{
               width: "auto",
