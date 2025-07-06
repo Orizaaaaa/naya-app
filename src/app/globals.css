@@ -25,3 +25,11 @@
    color: var(--foreground);
    font-family: var(--font-inter), sans-serif;
  }
+
+ @media print {
+   .a4-container {
+     page-break-after: always;
+     width: 210mm;
+     min-height: 297mm;
+   }
+ }
