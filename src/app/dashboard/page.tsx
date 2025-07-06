@@ -15,6 +15,7 @@ import {
     Button,
 } from "@heroui/react";
 import { FaSquarePen } from 'react-icons/fa6'
+import CardBar from '@/components/fragments/cardBox/CardBar'
 
 type Props = {}
 
@@ -38,27 +39,10 @@ const page = (props: Props) => {
                 <div className="">
                     <div className="grid grid-cols-3 gap-4">
 
-                        <div className="p-4 bg-blue-500 rounded-lg ">
-                            <div className="flex items-center gap-3">
-                                <MdOutlineMessage size={20} color="white" />
-                                <h1 className="text-white">Jumlah Surat</h1>
-                            </div>
-                            <h1 className="text-2xl font-bold text-white">199</h1>
-                        </div>
-                        <div className="p-4 bg-blue-500 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <FaSquarePen size={20} color="white" />
-                                <h1 className="text-white">Surat yang harus di setujui</h1>
-                            </div>
-                            <h1 className="text-2xl font-bold text-white">199</h1>
-                        </div>
-                        <div className="p-4 bg-blue-500 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <MdOutlineMessage size={20} color="white" />
-                                <h1 className="text-white">Siswa yang sudah di atasi</h1>
-                            </div>
-                            <h1 className="text-2xl font-bold text-white">199</h1>
-                        </div>
+                        <CardBar className='bg-blue-500' text='Jumlah Surat' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
+                        <CardBar className='bg-secondBlack' text='Surat yang harus di setujui' value='199' icon={<FaSquarePen size={20} color="white" />} />
+                        <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
+
 
                     </div>
 
@@ -107,13 +91,13 @@ const page = (props: Props) => {
                     <div className="p-4 rounded-lg bg-secondBlack text-white">
                         <h1 className='text-center  text-white py-2 rounded-lg font-medium' >TERAKHIR DI SETUJUI</h1>
                         <div className="text mt-5">
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Oriza Sativa</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Alya Prameswari</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Bagas Wicaksono</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Citra Maharani</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Dimas Aditya</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Eka Lestari</h1>
-                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Farhan Naufal</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Oriza Sativa</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Alya Prameswari</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Bagas Wicaksono</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Citra Maharani</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Dimas Aditya</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Eka Lestari</h1>
+                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Farhan Naufal</h1>
 
                         </div>
                     </div>

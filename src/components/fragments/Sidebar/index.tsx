@@ -119,13 +119,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item Dashboard --> */}
               <NavigationList icon={<MdDashboard size={24} />} title="Home" pathname="/dashboard" />
-              <NavigationList icon={<LuBookPlus size={19} />} title="List Akun" pathname="/listAccount" />
-              <NavigationList icon={<IoReceiptOutline size={19} />} title="Catat Transaksi" pathname="/catatTransaksi" />
-              <NavigationList icon={<MdOutlineLibraryBooks size={19} />} title="Jurnal Umum" pathname="/jurnalUmum" />
-              <NavigationList icon={<RiBook2Line size={19} />} title="Buku Besar" pathname="/bukuBesar" />
-              <NavigationList icon={<TbMoneybag size={19} />} title="Neraca Saldo" pathname="/neracaSaldo" />
-              <NavigationList icon={<LuBookDown size={19} />} title="Laba Rugi" pathname="/labaRugi" />
-              <NavigationList icon={<HiOutlineArchiveBox size={19} />} title="Jurnal Penutupan" pathname="/jurnalPenutupan" />
+              <NavigationList icon={<LuBookPlus size={24} />} title="Buat Surat" pathname="/create_message" />
 
               <ButtonSecondary className="w-full py-1 rounded-md font-medium" onClick={handleLogout} >Logout</ButtonSecondary>
 
