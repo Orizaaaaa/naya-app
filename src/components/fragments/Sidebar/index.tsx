@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import NavigationList from "../NavigationList/NavigationList";
 import { RxDashboard } from "react-icons/rx";
-import { logo } from "@/app/image";
+import { logo, realLogo } from "@/app/image";
 import Image from "next/image";
 import { IoPricetags, IoReceiptOutline, IoStorefront } from "react-icons/io5";
 import { FaUserGear } from "react-icons/fa6";
@@ -86,7 +86,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between lg:justify-center gap-2 px-6 py-5.5 lg:py-6.5">
         <div >
-          <Image className="h-12" src={logo} alt="logo" />
+          <Image className="h-10" src={realLogo} alt="logo" />
         </div>
 
         <button

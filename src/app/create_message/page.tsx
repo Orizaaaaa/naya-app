@@ -3,14 +3,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import html2pdf from 'html2pdf.js';
+import DefaultLayout from '@/components/layouts/DefaultLayout';
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
 // Jika Anda tidak memiliki komponen ini, Anda bisa menggantinya dengan div kosong atau menyesuaikan sesuai kebutuhan.
-const DefaultLayout = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen bg-gray-100 p-4">
-        {children}
-    </div>
-);
+
 
 // Dynamic import JoditEditor untuk memastikan hanya di-render di sisi klien
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
