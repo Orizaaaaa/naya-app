@@ -216,7 +216,7 @@ function Page() {
                                 fontFamily: 'Times New Roman, serif',
                                 lineHeight: '1.5',
                                 fontSize: '12pt',
-                                border: '1px solid #ddd',
+                                // border: '1px solid #ddd', // Baris ini dihapus
                             }}
                             dangerouslySetInnerHTML={{ __html: filledTemplate }}
                         />
