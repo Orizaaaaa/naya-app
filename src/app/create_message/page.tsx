@@ -20,33 +20,30 @@ function Page() {
     const printRef = useRef<HTMLDivElement>(null); // Ref untuk div pratinjau A4
     const measurementRef = useRef<HTMLDivElement>(null); // Ref untuk div pengukuran tersembunyi
 
-    const [template, setTemplate] = useState<string>(`
-<div style="position: relative; min-height: 297mm;">
-        <h2 class="text-center" style="text-align: center; margin-top: 0; margin-bottom: 0;">SURAT KETERANGAN</h2>
-        <p style="margin-bottom: 0; line-height: 1.5;">Nama: {nama}</p>
-        <p style="margin-bottom: 0; line-height: 1.5;">Kelas: {kelas}</p>
-        <p style="margin-bottom: 0; line-height: 1.5;">Alasan: {alasan}</p>
-        <p style="margin-bottom: 0; line-height: 1.5;">Tanggal: {tanggal}</p>
-        <p style="margin-bottom: 0; line-height: 1.5;">
-          Silakan ketik isi surat sebanyak apapun langsung di editor ini tanpa batasan. Jika panjang, maka akan otomatis terbagi ke beberapa halaman A4 saat ditampilkan dan diunduh sebagai PDF.
-          Ini adalah paragraf contoh untuk menguji tampilan multi-halaman. Anda bisa menambahkan lebih banyak teks di sini untuk melihat bagaimana halaman akan terbagi secara otomatis. Pastikan untuk mengisi formulir di bawah ini untuk melihat pratinjau yang terisi.
-        </p>
-        <p style="margin-bottom: 0; line-height: 1.5;">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <p style="margin-bottom: 0; line-height: 1.5;">
-          Curabitur pretium tincidunt lacus. Nulla facilisi. Aliquam erat volutpat. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper et, sollicitudin eu, nulla. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non est.
-        </p>
-        <p style="margin-bottom: 0; line-height: 1.5;">
-          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et ipsum sagittis fermentum. Ut ac quam. Nunc eget est. Phasellus et lorem. Vivamus sollicitudin.
-        </p>
-        <!-- Tanda Tangan -->
-        <div style="margin-top: 50px; text-align: right;">
-            <p>Hormat kami,</p>
-            <p>(Nama Penanda Tangan)</p>
-            <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 80px; height: 80px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
-        </div>
+    // Bagian template yang TIDAK akan diedit oleh Jodit Editor
+    const fixedFooterTemplate = `
+    <!-- Tanda Tangan -->
+    <div style="margin-top: 50px; text-align: right;">
+        <p style="margin-bottom: 0; line-height: 1.5;">Hormat kami,</p>
+        <p style="margin-top: 0; margin-bottom: 0; line-height: 1.5;">(Nama Penanda Tangan)</p>
+        <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 150px; height: auto; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
     </div>
+    `;
+
+    // Konten yang akan diedit di Jodit Editor
+    const [editableContent, setEditableContent] = useState<string>(`
+    <p style="margin-bottom: 0; line-height: 1.5;">
+      Ini adalah paragraf contoh untuk menguji tampilan multi-halaman. Anda bisa menambahkan lebih banyak teks di sini untuk melihat bagaimana halaman akan terbagi secara otomatis. Pastikan untuk mengisi formulir di bawah ini untuk melihat pratinjau yang terisi.
+    </p>
+    <p style="margin-bottom: 0; line-height: 1.5;">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <p style="margin-bottom: 0; line-height: 1.5;">
+      Curabitur pretium tincidunt lacus. Nulla facilisi. Aliquam erat volutpat. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper et, sollicitudin eu, nulla. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non est.
+    </p>
+    <p style="margin-bottom: 0; line-height: 1.5;">
+      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et ipsum sagittis fermentum. Ut ac quam. Nunc eget est. Phasellus et lorem. Vivamus sollicitudin.
+    </p>
     `);
 
     const [formData, setFormData] = useState({
@@ -54,7 +51,7 @@ function Page() {
         kelas: 'XII IPA 1',
         alasan: 'Sakit',
         tanggal: '06 Juli 2025',
-        orizaSativaImageUrl: '', // Placeholder image
+        orizaSativaImageUrl: 'https://placehold.co/500x300/F0F0F0/000000?text=Oriza+Sativa', // Placeholder image
         signatureImageUrl: '', // Default kosong, akan diisi dari file lokal
     });
 
@@ -99,7 +96,15 @@ function Page() {
     }, [filledTemplate]);
 
     const handleGenerate = () => {
-        const result = generateFromTemplate(template, formData);
+        // Gabungkan bagian template yang tetap dengan konten yang diedit
+        const fullHtmlTemplate = `
+            <div style="position: relative; min-height: 297mm;">
+             
+                ${editableContent}
+                ${fixedFooterTemplate}
+            </div>
+        `;
+        const result = generateFromTemplate(fullHtmlTemplate, formData);
         setFilledTemplate(result);
     };
 
@@ -201,9 +206,9 @@ function Page() {
                     <div className="a4-page-editor-wrapper relative overflow-hidden rounded-md shadow-inner">
                         <JoditEditor
                             ref={editor}
-                            value={template}
+                            value={editableContent} // Menggunakan editableContent sebagai nilai Jodit
                             config={joditConfig}
-                            onBlur={(newContent) => setTemplate(newContent)}
+                            onBlur={(newContent) => setEditableContent(newContent)} // Memperbarui editableContent
                         />
                         <div className="absolute inset-0 border-4 border-dashed border-blue-200 pointer-events-none rounded-md"></div>
                     </div>
