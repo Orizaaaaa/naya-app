@@ -104,13 +104,21 @@ const page = (props: Props) => {
 
                 <div >
                     {/* Kanan - kecil */}
-                    <div className="p-4 rounded-lg bg-secondBlack">
-                        <p>Hallo</p>
+                    <div className="p-4 rounded-lg bg-secondBlack text-white">
+                        <h1 className='text-center  text-white py-2 rounded-lg font-medium' >TERAKHIR DI SETUJUI</h1>
+                        <div className="text mt-5">
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Oriza Sativa</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Alya Prameswari</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Bagas Wicaksono</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Citra Maharani</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Dimas Aditya</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Eka Lestari</h1>
+                            <h1 className='mb-2 bg-slate-200 rounded-lg text-black p-3'>Farhan Naufal</h1>
+
+                        </div>
                     </div>
 
-                    <div className="p-4 rounded-lg">
-                        <p>Hallo</p>
-                    </div>
+
                 </div>
 
 
