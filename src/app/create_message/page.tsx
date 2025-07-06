@@ -194,7 +194,7 @@ function Page() {
 
     return (
         <DefaultLayout>
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="">
 
                     {/* Editor */}
@@ -275,13 +275,14 @@ function Page() {
                             Tampilkan Pratinjau
                         </button>
                     </div>
+
+
                 </div>
             </div>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
 
 
                 {/* Form */}
-
 
                 {filledTemplate && (
                     <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
@@ -299,7 +300,8 @@ function Page() {
                             ref={printRef}
                             className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-md overflow-hidden"
                             style={{
-                                width: '210mm',
+                                width: '100%', // Mengubah dari '210mm' ke '100%'
+                                maxWidth: '210mm', // Menambahkan maxWidth untuk mempertahankan ukuran A4 pada layar besar
                                 minHeight: '297mm', // Gunakan minHeight agar bisa memanjang
                                 padding: '20mm',
                                 boxSizing: 'border-box',
@@ -319,7 +321,7 @@ function Page() {
                                 position: 'absolute',
                                 left: '-9999px', // Sembunyikan dari tampilan
                                 top: '-9999px',
-                                width: '210mm',
+                                width: '210mm', // Tetap 210mm untuk pengukuran akurat
                                 minHeight: '297mm',
                                 padding: '20mm',
                                 boxSizing: 'border-box',
