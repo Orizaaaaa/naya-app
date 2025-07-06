@@ -14,6 +14,8 @@ import { MdDashboard, MdOutlineLibraryBooks } from "react-icons/md";
 import { RiBook2Line } from "react-icons/ri";
 import { TbMoneybag } from "react-icons/tb";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
+import { SiGitbook } from "react-icons/si";
+import { BsPersonFillGear } from "react-icons/bs";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -120,8 +122,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
               <NavigationList icon={<MdDashboard size={24} />} title="Home" pathname="/dashboard" />
               <NavigationList icon={<LuBookPlus size={24} />} title="Buat Surat" pathname="/create_message" />
+              <NavigationList icon={<SiGitbook size={24} />} title="Semua Surat" pathname="/all_message" />
+              <NavigationList icon={<BsPersonFillGear size={24} />} title="Permintaan Surat" pathname="/request_message" />
 
-              <ButtonSecondary className="w-full py-1 rounded-md font-medium" onClick={handleLogout} >Logout</ButtonSecondary>
+              <ButtonSecondary className="w-full py-1 rounded-md font-medium mt-20" onClick={handleLogout} >Logout</ButtonSecondary>
 
 
               {/* <!-- Menu Item Calendar -->
