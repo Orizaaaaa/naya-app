@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@source "../../../naya-app/node_modules/@heroui/theme/dist";
+@custom-variant dark (&:is(.dark *));
+
 
 @theme {
   --font-display: "Satoshi", "sans-serif";
