@@ -14,6 +14,7 @@ import {
     getKeyValue,
     Button,
 } from "@heroui/react";
+import { FaSquarePen } from 'react-icons/fa6'
 
 type Props = {}
 
@@ -46,23 +47,25 @@ const page = (props: Props) => {
                         </div>
                         <div className="p-4 bg-blue-500 rounded-lg">
                             <div className="flex items-center gap-3">
-                                <MdOutlineMessage size={20} color="white" />
-                                <h1 className="text-white">Jumlah Surat</h1>
+                                <FaSquarePen size={20} color="white" />
+                                <h1 className="text-white">Surat yang harus di setujui</h1>
                             </div>
                             <h1 className="text-2xl font-bold text-white">199</h1>
                         </div>
                         <div className="p-4 bg-blue-500 rounded-lg">
                             <div className="flex items-center gap-3">
                                 <MdOutlineMessage size={20} color="white" />
-                                <h1 className="text-white">Jumlah Surat</h1>
+                                <h1 className="text-white">Siswa yang sudah di atasi</h1>
                             </div>
                             <h1 className="text-2xl font-bold text-white">199</h1>
                         </div>
 
                     </div>
 
+
+                    <h1 className='mt-16 text-white text-2xl mb-3 ' >Permintaan surat siswa</h1>
                     <Table
-                        aria-label="Example table with client side pagination"
+                        aria-label="Example table with client side pagination "
                         bottomContent={
                             <div className="flex w-full justify-center">
                                 <Pagination
@@ -77,7 +80,10 @@ const page = (props: Props) => {
                             </div>
                         }
                         classNames={{
-                            wrapper: "min-h-[222px]",
+                            // bagian kepala tabel
+                            th: "text-white bg-black",        // teks kolom header
+                            // teks isi cell
+                            wrapper: "min-h-[222px] bg-[#16181a] text-white",
                         }}
                     >
                         <TableHeader>
@@ -112,7 +118,7 @@ const page = (props: Props) => {
 
 
 
-        </DefaultLayout>
+        </DefaultLayout >
     )
 }
 
