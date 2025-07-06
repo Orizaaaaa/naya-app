@@ -21,7 +21,7 @@ const page = (props: Props) => {
 
     return (
         <DefaultLayout>
-            <h1 className='mt-16 text-white text-2xl mb-3 ' >Permintaan surat siswa</h1>
+            <h1 className='mt-2 text-white text-2xl mb-3 ' >Permintaan surat siswa</h1>
             <Table
                 aria-label="Example table with client side pagination "
                 bottomContent={
