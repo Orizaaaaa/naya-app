@@ -21,24 +21,33 @@ function Page() {
     const measurementRef = useRef<HTMLDivElement>(null); // Ref untuk div pengukuran tersembunyi
 
     const [template, setTemplate] = useState<string>(`
-    <h2 class="text-center" style="text-align: center;">SURAT KETERANGAN</h2>
-    <p>Nama: {nama}</p>
-    <p>Kelas: {kelas}</p>
-    <p>Alasan: {alasan}</p>
-    <p>Tanggal: {tanggal}</p>
-    <p>
-      Silakan ketik isi surat sebanyak apapun langsung di editor ini tanpa batasan. Jika panjang, maka akan otomatis terbagi ke beberapa halaman A4 saat ditampilkan dan diunduh sebagai PDF.
-      Ini adalah paragraf contoh untuk menguji tampilan multi-halaman. Anda bisa menambahkan lebih banyak teks di sini untuk melihat bagaimana halaman akan terbagi secara otomatis. Pastikan untuk mengisi formulir di bawah ini untuk melihat pratinjau yang terisi.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-    <p>
-      Curabitur pretium tincidunt lacus. Nulla facilisi. Aliquam erat volutpat. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper et, sollicitudin eu, nulla. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non est.
-    </p>
-    <p>
-      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et ipsum sagittis fermentum. Ut ac quam. Nunc eget est. Phasellus et lorem. Vivamus sollicitudin.
-    </p>
+    <div style="position: relative; min-height: 297mm;">
+        <h2 class="text-center" style="text-align: center;">SURAT KETERANGAN</h2>
+        <p>Nama: {nama}</p>
+        <p>Kelas: {kelas}</p>
+        <p>Alasan: {alasan}</p>
+        <p>Tanggal: {tanggal}</p>
+        <p>
+          Silakan ketik isi surat sebanyak apapun langsung di editor ini tanpa batasan. Jika panjang, maka akan otomatis terbagi ke beberapa halaman A4 saat ditampilkan dan diunduh sebagai PDF.
+          Ini adalah paragraf contoh untuk menguji tampilan multi-halaman. Anda bisa menambahkan lebih banyak teks di sini untuk melihat bagaimana halaman akan terbagi secara otomatis. Pastikan untuk mengisi formulir di bawah ini untuk melihat pratinjau yang terisi.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        <p>
+          Curabitur pretium tincidunt lacus. Nulla facilisi. Aliquam erat volutpat. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper et, sollicitudin eu, nulla. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non est.
+        </p>
+        <p>
+          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et ipsum sagittis fermentum. Ut ac quam. Nunc eget est. Phasellus et lorem. Vivamus sollicitudin.
+        </p>
+     
+        <!-- Tanda Tangan -->
+        <div style="margin-top: 50px; text-align: right;">
+            <p>Hormat kami,</p>
+            <p>(Nama Penanda Tangan)</p>
+            <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 80px; height: 80px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
+        </div>
+    </div>
     `);
 
     const [formData, setFormData] = useState({
@@ -46,6 +55,8 @@ function Page() {
         kelas: 'XII IPA 1',
         alasan: 'Sakit',
         tanggal: '06 Juli 2025',
+        orizaSativaImageUrl: 'https://placehold.co/500x300/F0F0F0/000000?text=Oriza+Sativa', // Placeholder image
+        signatureImageUrl: '', // Default kosong, akan diisi dari file lokal
     });
 
     const [filledTemplate, setFilledTemplate] = useState<string>('');
@@ -55,6 +66,7 @@ function Page() {
     const generateFromTemplate = useCallback((templateString: string, data: Record<string, string>) => {
         let result = templateString;
         Object.entries(data).forEach(([key, value]) => {
+            // Mengganti placeholder dengan nilai dari formData
             result = result.replace(new RegExp(`{${key}}`, 'g'), value);
         });
         return result;
@@ -106,7 +118,7 @@ function Page() {
             .set({
                 margin: [20, 20, 20, 20], // Margin atas, kiri, bawah, kanan (sesuai padding A4)
                 filename: 'surat-multi-halaman.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'png', quality: 0.98 }, // Mengubah type dari jpeg ke png
                 html2canvas: {
                     scale: 2, // Skala rendering HTML ke kanvas
                     useCORS: true,
@@ -130,6 +142,22 @@ function Page() {
             .save();
     };
 
+    // Fungsi untuk menangani perubahan input file tanda tangan
+    const handleSignatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                // Simpan Base64 string ke formData
+                setFormData((prev) => ({ ...prev, signatureImageUrl: reader.result as string }));
+                console.log("Signature Image Base64 URL:", reader.result); // Debugging log
+            };
+            reader.readAsDataURL(file); // Baca file sebagai Data URL (Base64)
+        } else {
+            setFormData((prev) => ({ ...prev, signatureImageUrl: '' })); // Kosongkan jika tidak ada file
+        }
+    };
+
     // Konfigurasi Jodit Editor
     const joditConfig = {
         readonly: false, // false untuk mode edit
@@ -138,7 +166,29 @@ function Page() {
         width: '100%', // Lebar 100% dari parent
         toolbarSticky: false, // Toolbar tidak lengket
         iframe: false, // Set ke false untuk menghindari masalah styling iframe
-        // Tambahkan konfigurasi lain sesuai kebutuhan Jodit
+        // Memungkinkan penyisipan gambar melalui URL atau base64
+        buttons: 'bold,italic,underline,strikethrough,|,ul,ol,|,font,fontsize,lineHeight,paragraph,align,|,image,link,table,code,selectall,cut,copy,paste',
+        extraButtons: ['image'], // Pastikan tombol image ada
+        image: {
+            openOnDblClick: true, // Buka dialog edit gambar saat double click
+            // Konfigurasi upload gambar (jika ada backend)
+            uploader: {
+                insertImageAsBase64URI: true, // Untuk demo, langsung sisipkan sebagai base64 URI
+            },
+            // Jika tidak ada uploader, Anda bisa menggunakan dialog untuk URL
+            popap: {
+                open: 'insertImage',
+                elements: [
+                    'image',
+                    'imageSrc',
+                    'imageAlt',
+                    'imageSize',
+                    'imageMargins',
+                    'imageAlign',
+                    'imageRemove',
+                ],
+            },
+        },
     };
 
     return (
@@ -184,6 +234,38 @@ function Page() {
                                 />
                             </div>
                         ))}
+                        {/* Input untuk URL Gambar Oriza Sativa */}
+                        <div>
+                            <label htmlFor="orizaSativaImageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                                URL Gambar Oriza Sativa:
+                            </label>
+                            <input
+                                id="orizaSativaImageUrl"
+                                type="text"
+                                className="border border-gray-300 px-4 py-2 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+                                placeholder="Masukkan URL gambar Oriza Sativa"
+                                value={formData.orizaSativaImageUrl}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({ ...prev, orizaSativaImageUrl: e.target.value }))
+                                }
+                            />
+                        </div>
+                        {/* Input untuk File Gambar Tanda Tangan */}
+                        <div>
+                            <label htmlFor="signatureImageFile" className="block text-sm font-medium text-gray-700 mb-1">
+                                Unggah Gambar Tanda Tangan:
+                            </label>
+                            <input
+                                id="signatureImageFile"
+                                type="file"
+                                accept="image/*" // Hanya menerima file gambar
+                                className="border border-gray-300 px-4 py-2 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                onChange={handleSignatureChange}
+                            />
+                            {formData.signatureImageUrl && (
+                                <p className="text-sm text-gray-500 mt-1">Gambar berhasil diunggah.</p>
+                            )}
+                        </div>
                     </div>
                     <button
                         onClick={handleGenerate}
