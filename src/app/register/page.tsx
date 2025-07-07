@@ -191,19 +191,18 @@ const Register = () => {
     };
 
     const dataStatus = [
-        { label: "Sedang Berjalan", value: "Sedang Berjalan" },
-        { label: "Berhenti Sementara", value: "Berhenti Sementara" },
-        { label: "Selesai", value: "Selesai" },
+        { label: "Laki-laki", value: "Laki-laki" },
+        { label: "Perempuan", value: "Perempuan" },
     ]
 
     const onSelectionChange = (key: string) => {
         setForm({
-            ...form,         // Salin semua properti dari objek `form`
-            status: key      // Ganti nilai `status` dengan `key`
+            ...form,
+            jenis_kelamin: key
         });
     };
     return (
-        <div className="register bg-black min-h-screen">
+        <div className="register bg-black min-h-screen flex flex-col"> {/* Added flex-col */}
             <div className="container mx-auto">
                 <div className="flex items-center py-3 cursor-pointer" onClick={() => router.back()}>
                     <IoIosArrowBack size={20} color='white' />
@@ -211,8 +210,8 @@ const Register = () => {
                 </div>
             </div>
 
-            <div className="container mx-auto flex flex-col justify-center items-center w-full">
-
+            {/* Added flex, justify-center, items-center to center the form */}
+            <div className="container mx-auto flex flex-grow justify-center items-center w-full">
 
                 <form className='p-6 bg-[#e9e9e9] rounded-lg m-3 w-[350px] sm:w-[400px] md:w-[450px] lg:w-[500px]' onSubmit={handleRegister}>
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.name} placeholder='Masukkan Nama' type='text' htmlFor='name' value={form.name} onChange={handleChange} />
@@ -222,13 +221,14 @@ const Register = () => {
 
                     <div className="flex gap-3">
                         <div className="w-full">
-                            <h1 className="text-sm" >Jenis Kelamin</h1>
+                            <h1 className="text-sm text-gray-400" >Jenis Kelamin</h1>
                             <DropdownCustom clearButton={false} defaultItems={dataStatus} onSelect={(e: any) => onSelectionChange(e)}>
                                 {(item: any) => <AutocompleteItem key={item.value}>{item.label}</AutocompleteItem>}
                             </DropdownCustom>
+                            {errorMsg.jenis_kelamin && <p className="text-red-500 text-xs mt-1">{errorMsg.jenis_kelamin}</p>}
                         </div>
-                        <div className="">
-                            <h1 className="text-sm" >Kelas</h1>
+                        <div className="w-full"> {/* Changed to w-full for better responsiveness */}
+                            <h1 className="text-sm text-gray-400" >Kelas</h1>
                             <InputForm className='bg-slate-300 ' errorMsg={errorMsg.kelas} placeholder='Kelas' type='text' htmlFor='kelas' value={form.kelas} onChange={handleChange} />
                         </div>
 
@@ -242,11 +242,11 @@ const Register = () => {
                             label='Tanggal Lahir'
                             showMonthAndYearPickers
                             aria-label='date'
-                            value={form.tanggal_lahir ?? new Date()} // provide a default value if form.tanggal_lahir is null
+                            value={form.tanggal_lahir ?? parseDate(formatDate(dateNow))} // provide a default value if form.tanggal_lahir is null
                             variant={'bordered'}
                             onChange={(e) => setForm({ ...form, tanggal_lahir: e })}
                         />
-
+                        {errorMsg.tanggal_lahir && <p className="text-red-500 text-xs mt-1">{errorMsg.tanggal_lahir}</p>}
                     </div>
 
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.alamat} placeholder='Alamat Lengkap' type='text' htmlFor='alamat' value={form.alamat} onChange={handleChange} />
