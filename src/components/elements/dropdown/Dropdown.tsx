@@ -1,4 +1,5 @@
-import { Autocomplete, AutocompleteItem } from '@nextui-org/react'
+
+import { Autocomplete } from '@heroui/react'
 import React from 'react'
 
 type Props = {
@@ -6,12 +7,13 @@ type Props = {
     onSelect: any
     defaultItems: any
     children: any
-
+    label?: string
 }
 
-const DropdownCustom = ({ clearButton, onSelect, defaultItems, children }: Props) => {
+const DropdownCustom = ({ clearButton, onSelect, defaultItems, children, label }: Props) => {
     return (
         <Autocomplete
+            label={label}
             aria-label='dropdown'
             clearButtonProps={clearButton}
             onSelect={onSelect}

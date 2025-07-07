@@ -1,30 +1,47 @@
 type Props = {
-    htmlFor: string
-    title?: string
-    type: string
-    onChange: any
-    value: number | string
-    placeholder?: string,
-    className?: string
-    styleTitle?: string
-}
+    htmlFor: string;
+    title?: string;
+    type: string;
+    onChange: any;
+    value: number | string;
+    placeholder?: string;
+    className?: string;
+    styleTitle?: string;
+    marginDiown?: string;
+    errorMsg?: string;
+};
 
-function InputForm({ htmlFor, title, type, onChange, value, placeholder, className, styleTitle }: Props) {
+function InputForm({
+    htmlFor,
+    errorMsg,
+    marginDiown = 'mb-2',
+    title,
+    type,
+    onChange,
+    value,
+    placeholder,
+    className,
+    styleTitle
+}: Props) {
     return (
-        <div className={`mb-3 `} >
-            <label htmlFor={htmlFor} className={`${styleTitle}`}>
-                {title}
-            </label>
+        <div className={marginDiown}>
+            {title && (
+                <label htmlFor={htmlFor} className={`${styleTitle}`}>
+                    {title}
+                </label>
+            )}
             <input
-                className={`h-10 p-4 mt-1 rounded-md outline-none w-full  ${className}`}
+                className={`h-10 p-4 rounded-md outline-none w-full  ${errorMsg ? 'border-2 border-red' : ''
+                    } ${className}`}
                 type={type}
                 name={htmlFor}
                 onChange={onChange}
                 value={value}
                 placeholder={placeholder}
             />
+            {errorMsg && <p className="text-sm text-red">{errorMsg}</p>}
         </div>
-    )
+    );
 }
 
-export default InputForm
+export default InputForm;
