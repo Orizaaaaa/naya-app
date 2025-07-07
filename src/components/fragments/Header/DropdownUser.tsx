@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { capitalizeWords } from "@/utils/helper";
+import { realLogo } from "@/app/image";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -52,27 +53,23 @@ const DropdownUser = () => {
         href="#"
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white ">
+          <span className="block text-sm font-medium text-white ">
             {name ? capitalizeWords(name) : "User"}
           </span>
-          <span className="block text-xs">
+          <span className="block text-xs text-white">
             {role ? capitalizeWords(role) : "Pengguna"}
           </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <Image
-            width={112}
-            height={112}
+        {/* image yang ini mengapa tidak bulat dan memenuhi ukuran */}
+        <div className="h-12 w-12 rounded-full">
+          <img
+            className="w-full h-full object-cover rounded-full"
             // nanti profile di sini
-            src={"/images/user/user-01.png"}
-            style={{
-              width: "auto",
-              height: "auto",
-            }}
-            alt="User"
+            src='https://ichef.bbci.co.uk/ace/standard/934/cpsprodpb/fee9/live/5553ba50-46b9-11f0-8953-7352f91166a4.jpg'
+            alt="admin-profile"
           />
-        </span>
+        </div>
       </Link>
 
       {/* <!-- Dropdown Start --> */}
