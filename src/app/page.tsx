@@ -11,7 +11,7 @@ import { IoEye } from 'react-icons/io5';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { loginService } from '@/api/auth';
-import { logo } from './image';
+import { logo, oneLogo, realLogo } from './image';
 import { Spinner } from '@heroui/react';
 
 const Login = () => {
@@ -121,7 +121,7 @@ const Login = () => {
       <div className="container bg-primary mx-auto flex flex-col justify-center items-center  h-[99vh] ">
         <form className='p-6 bg-[#e9e9e9] w-full md:w-96 rounded-lg m-3 lg:m-0' onSubmit={handleLogin}>
           <div className="logo flex justify-center my-5">
-            <Image src={logo} alt="logo" width={70} height={70} />
+            <Image src={realLogo} alt="logo" width={180} height={130} />
           </div>
 
           <InputForm className='bg-slate-100' errorMsg={errorMsg.email} placeholder='Masukkan Email' type='email' htmlFor={'email'} value={form.email} onChange={handleChange} />
