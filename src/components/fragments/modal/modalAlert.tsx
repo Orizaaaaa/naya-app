@@ -1,7 +1,9 @@
 import React from 'react'
-import { warning } from '@/app/image'
+
 import Image from 'next/image'
-import { Modal, ModalBody, ModalContent } from '@nextui-org/react'
+import { Modal, ModalBody, ModalContent } from '@heroui/react'
+import { warning } from '@/app/image'
+
 
 type Props = {
     isOpen?: any
