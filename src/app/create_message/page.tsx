@@ -29,18 +29,28 @@ function Page() {
 
     // Konten yang akan diedit di Jodit Editor
     const [editableContent, setEditableContent] = useState<string>(`
-    <p style="margin-bottom: 0; line-height: 1.5;">
-      Ini adalah paragraf contoh untuk menguji tampilan multi-halaman. Anda bisa menambahkan lebih banyak teks di sini untuk melihat bagaimana halaman akan terbagi secara otomatis. Pastikan untuk mengisi formulir di bawah ini untuk melihat pratinjau yang terisi.
+<div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
+  <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
+  <div style="text-align: center;">
+    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>PEMERINTAH DAERAH PROVINSI JAWA BARAT</strong></span></h3>
+    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>DINAS PENDIDIKAN</strong></span></h3>
+    <h2 style="margin: 10px 0; font-weight: bold;">
+      <span style="font-size: 18px;">CABANG DINAS PENDIDIKAN WILAYAH VIII<br>
+      SMA NEGERI 1 MARGAASIH</span>
+    </h2>
+   <p style="margin: 5px 0; font-size: 14px;">
+      Jalan Terusan Taman Kopo Indah III - Mekarrahayu Telp. 022-54438236 Kec. Margaasih Kab. Bandung 40218<br />
+      Website:
+      <a href="http://www.sman1-margaasih.sch.id" style="color: blue;">www.sman1-margaasih.sch.id</a>
+      Email:
+      <a href="mailto:sman_1_margaasih@gmail.com" style="color: blue;">sman_1_margaasih@gmail.com</a>
     </p>
-    <p style="margin-bottom: 0; line-height: 1.5;">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-    <p style="margin-bottom: 0; line-height: 1.5;">
-      Curabitur pretium tincidunt lacus. Nulla facilisi. Aliquam erat volutpat. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper et, sollicitudin eu, nulla. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non est.
-    </p>
-    <p style="margin-bottom: 0; line-height: 1.5;">
-      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et ipsum sagittis fermentum. Ut ac quam. Nunc eget est. Phasellus et lorem. Vivamus sollicitudin.
-    </p>
+  </div>
+</div>
+
+
+
+
     `);
 
     const [formData, setFormData] = useState({
@@ -191,6 +201,8 @@ function Page() {
             },
         },
     };
+
+    console.log(editableContent);
 
     return (
         <DefaultLayout>
