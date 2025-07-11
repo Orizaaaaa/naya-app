@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import html2pdf from 'html2pdf.js';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
