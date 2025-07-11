@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const axiosInterceptor = axios.create({
-    baseURL: 'https://bedesacms.vercel.app',
+    baseURL: 'naya-epappers.vercel.app',
     // timeout: 5000,
 });
 
