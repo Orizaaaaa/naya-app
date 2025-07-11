@@ -127,7 +127,7 @@ function Page() {
 
         html2pdf()
             .set({
-                margin: [20, 20, 20, 20], // Margin atas, kiri, bawah, kanan (sesuai padding A4)
+                margin: [3, 3, 3, 3], // Margin atas, kiri, bawah, kanan (sesuai padding A4)
                 filename: 'surat-multi-halaman.pdf',
                 image: { type: 'png', quality: 0.98 }, // Mengubah type dari jpeg ke png
                 html2canvas: {
@@ -141,9 +141,9 @@ function Page() {
                     format: 'a4',
                     orientation: 'portrait',
                     // Posisi X dan Y untuk memulai konten PDF
-                    // 20mm adalah margin kiri dan atas
-                    x: 20,
-                    y: 20,
+                    // 3mm adalah margin kiri dan atas
+                    x: 3,
+                    y: 3,
                 },
                 // Menambahkan 'width' untuk secara eksplisit menentukan lebar area konten untuk rendering
                 // Lebar A4 (210mm) dikurangi margin kiri dan kanan (2 * 20mm) = 170mm
