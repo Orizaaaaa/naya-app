@@ -25,7 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable}  antialiased`}
+        className={`${inter.variable}  antialiased `}
+        suppressHydrationWarning={true}
       >
         <HeroUIProvider >
           {children}
