@@ -21,7 +21,7 @@ function Page() {
     const fixedFooterTemplate = `
     <!-- Tanda Tangan -->
     <div style="margin-top: 50px; text-align: right;">
-        <p style="margin-bottom: 0; line-height: 1.5;">Bandung, 09 Juli 2025</p>
+        <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {tanggal}</p>
         <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
         <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
         <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd </p>
