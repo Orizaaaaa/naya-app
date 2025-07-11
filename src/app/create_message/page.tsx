@@ -29,24 +29,24 @@ function Page() {
 
     // Konten yang akan diedit di Jodit Editor
     const [editableContent, setEditableContent] = useState<string>(`
-<div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
-  <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
-  <div style="text-align: center;">
-    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>PEMERINTAH DAERAH PROVINSI JAWA BARAT</strong></span></h3>
-    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>DINAS PENDIDIKAN</strong></span></h3>
-    <h2 style="margin: 10px 0; font-weight: bold;">
-      <span style="font-size: 18px;">CABANG DINAS PENDIDIKAN WILAYAH VIII<br>
-      SMA NEGERI 1 MARGAASIH</span>
-    </h2>
-   <p style="margin: 5px 0; font-size: 14px;">
-      Jalan Terusan Taman Kopo Indah III - Mekarrahayu Telp. 022-54438236 Kec. Margaasih Kab. Bandung 40218<br />
-      Website:
-      <a href="http://www.sman1-margaasih.sch.id" style="color: blue;">www.sman1-margaasih.sch.id</a>
-      Email:
-      <a href="mailto:sman_1_margaasih@gmail.com" style="color: blue;">sman_1_margaasih@gmail.com</a>
-    </p>
-  </div>
-</div>
+            <div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
+            <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
+            <div style="text-align: center;">
+                <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>PEMERINTAH DAERAH PROVINSI JAWA BARAT</strong></span></h3>
+                <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>DINAS PENDIDIKAN</strong></span></h3>
+                <h2 style="margin: 10px 0; font-weight: bold;">
+                <span style="font-size: 18px;">CABANG DINAS PENDIDIKAN WILAYAH VIII<br>
+                SMA NEGERI 1 MARGAASIH</span>
+                </h2>
+            <p style="margin: 5px 0; font-size: 14px;">
+                Jalan Terusan Taman Kopo Indah III - Mekarrahayu Telp. 022-54438236 Kec. Margaasih Kab. Bandung 40218<br />
+                Website:
+                <a href="http://www.sman1-margaasih.sch.id" style="color: blue;">www.sman1-margaasih.sch.id</a>
+                Email:
+                <a href="mailto:sman_1_margaasih@gmail.com" style="color: blue;">sman_1_margaasih@gmail.com</a>
+                </p>
+            </div>
+            </div>
 
 
 
