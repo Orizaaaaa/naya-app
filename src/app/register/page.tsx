@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/helper";
 import { parseDate } from '@internationalized/date'
 import DropdownCustom from "@/components/elements/dropdown/Dropdown";
+import { address } from "framer-motion/client";
 // Pastikan ini ada
 
 const Register = () => {
@@ -30,13 +31,15 @@ const Register = () => {
         password: '',
         confirmPassword: '',
         role: 'user',
-        number_phone: '',
-        nik: '',
-        tempat_lahir: '',
-        tanggal_lahir: parseDate(formatDate(dateNow)),
-        jenis_kelamin: '',
-        alamat: '',
-        kelas: '',
+        phone: '',
+        nis: '',
+        nisn: '',
+        address: '',
+        place_of_birth: '',
+        birthdate: parseDate(formatDate(dateNow)),
+        gender: '',
+        image: '',
+        class_name: '',
     });
 
     const [errorMsg, setErrorMsg] = useState({
@@ -46,13 +49,14 @@ const Register = () => {
         confirmPassword: '',
         image: '',
         role: '',
-        number_phone: '',
-        nik: '',
-        tempat_lahir: '',
-        tanggal_lahir: '',
-        jenis_kelamin: '',
-        alamat: '',
-        kelas: '',
+        phone: '',
+        place_of_birth: '',
+        birthdate: '',
+        gender: '',
+        class_name: '',
+        nis: '',
+        nisn: '',
+        address: '',
     });
 
     const togglePassword = () => {
@@ -68,7 +72,7 @@ const Register = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
-        if (name === 'number_phone') {
+        if (name === 'phone') {
             let numericValue = value.replace(/\D/g, '');
             if (numericValue.startsWith('08')) {
                 numericValue = '628' + numericValue.slice(2);
@@ -77,32 +81,17 @@ const Register = () => {
             if (numericValue.length > 15) {
                 setErrorMsg((prev) => ({
                     ...prev,
-                    number_phone: '*Nomor tidak boleh lebih dari 15 angka',
+                    phone: '*Nomor tidak boleh lebih dari 15 angka',
                 }));
                 return;
             } else {
-                setErrorMsg((prev) => ({ ...prev, number_phone: '' }));
+                setErrorMsg((prev) => ({ ...prev, phone: '' }));
             }
 
             setForm({ ...form, [name]: numericValue });
             return;
         }
 
-        if (name === 'nik') {
-            const numericValue = value.replace(/\D/g, '');
-            if (numericValue.length > 16) {
-                setErrorMsg((prev) => ({
-                    ...prev,
-                    nik: '*NIK tidak boleh lebih dari 16 digit',
-                }));
-                return;
-            } else {
-                setErrorMsg((prev) => ({ ...prev, nik: '' }));
-            }
-
-            setForm({ ...form, [name]: numericValue });
-            return;
-        }
 
         setForm({ ...form, [name]: value });
     };
@@ -113,8 +102,8 @@ const Register = () => {
 
         const newErrorMsg = {
             name: '', email: '', password: '', confirmPassword: '', image: '', role: '',
-            number_phone: '', nik: '', tempat_lahir: '', tanggal_lahir: '',
-            jenis_kelamin: '', alamat: '', kelas: ''
+            phone: '', nik: '', place_of_birth: '', birthdate: '',
+            gender: '', class_name: '', nis: '', nisn: '', address: '',
         };
         let valid = true;
 
@@ -149,33 +138,37 @@ const Register = () => {
             valid = false;
         }
 
-        if (!form.number_phone || !phoneRegex.test(form.number_phone)) {
-            newErrorMsg.number_phone = '*No HP harus diawali 628 dan minimal 10 digit';
+        if (!form.phone || !phoneRegex.test(form.phone)) {
+            newErrorMsg.phone = '*No HP harus diawali 628 dan minimal 10 digit';
             valid = false;
         }
 
-        if (!form.tempat_lahir) {
-            newErrorMsg.tempat_lahir = '*Tempat lahir wajib diisi';
+        if (!form.place_of_birth) {
+            newErrorMsg.place_of_birth = '*Tempat lahir wajib diisi';
             valid = false;
         }
 
-        if (!form.tanggal_lahir) {
-            newErrorMsg.tanggal_lahir = '*Tanggal lahir wajib diisi';
+        if (!form.birthdate) {
+            newErrorMsg.birthdate = '*Tanggal lahir wajib diisi';
             valid = false;
         }
 
-        if (!form.jenis_kelamin) {
-            newErrorMsg.jenis_kelamin = '*Jenis kelamin wajib dipilih';
+        if (!form.gender) {
+            newErrorMsg.gender = '*Jenis kelamin wajib dipilih';
             valid = false;
         }
 
-        if (!form.alamat) {
-            newErrorMsg.alamat = '*Alamat wajib diisi';
+        if (!form.place_of_birth) {
+            newErrorMsg.place_of_birth = '*Tempat lahir wajib diisi';
+            valid = false;
+        }
+        if (!form.adress) {
+            newErrorMsg.place_of_birth = '*Alamat wajib diisi';
             valid = false;
         }
 
-        if (!form.kelas) {
-            newErrorMsg.kelas = '*Kelas wajib diisi';
+        if (!form.class_name) {
+            newErrorMsg.class_name = '*class_name wajib diisi';
             valid = false;
         }
 
@@ -198,7 +191,7 @@ const Register = () => {
     const onSelectionChange = (key: string) => {
         setForm({
             ...form,
-            jenis_kelamin: key
+            gender: key
         });
     };
     return (
@@ -215,8 +208,12 @@ const Register = () => {
 
                 <form className='p-6 bg-[#e9e9e9] rounded-lg m-3 w-[350px] sm:w-[400px] md:w-[450px] lg:w-[500px]' onSubmit={handleRegister}>
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.name} placeholder='Masukkan Nama' type='text' htmlFor='name' value={form.name} onChange={handleChange} />
-                    <InputForm className='bg-slate-300' errorMsg={errorMsg.nik} placeholder='Masukkan NIK' type='text' htmlFor='nik' value={form.nik} onChange={handleChange} />
-                    <InputForm className='bg-slate-300' errorMsg={errorMsg.tempat_lahir} placeholder='Tempat Lahir' type='text' htmlFor='tempat_lahir' value={form.tempat_lahir} onChange={handleChange} />
+                    <div className="flex gap-4">
+                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nisn} placeholder='Masukkan NISN' type='text' htmlFor='nik' value={form.nisn} onChange={handleChange} />
+                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nis} placeholder='Masukkan NIS' type='text' htmlFor='nik' value={form.nis} onChange={handleChange} />
+                    </div>
+
+                    <InputForm className='bg-slate-300' errorMsg={errorMsg.place_of_birth} placeholder='Tempat Lahir' type='text' htmlFor='place_of_birth' value={form.place_of_birth} onChange={handleChange} />
 
 
                     <div className="flex gap-3">
@@ -225,11 +222,11 @@ const Register = () => {
                             <DropdownCustom clearButton={false} defaultItems={dataStatus} onSelect={(e: any) => onSelectionChange(e)}>
                                 {(item: any) => <AutocompleteItem key={item.value}>{item.label}</AutocompleteItem>}
                             </DropdownCustom>
-                            {errorMsg.jenis_kelamin && <p className="text-red-500 text-xs mt-1">{errorMsg.jenis_kelamin}</p>}
+                            {errorMsg.gender && <p className="text-red-500 text-xs mt-1">{errorMsg.gender}</p>}
                         </div>
                         <div className="w-full"> {/* Changed to w-full for better responsiveness */}
-                            <h1 className="text-sm text-gray-400" >Kelas</h1>
-                            <InputForm className='bg-slate-300 ' errorMsg={errorMsg.kelas} placeholder='Kelas' type='text' htmlFor='kelas' value={form.kelas} onChange={handleChange} />
+                            <h1 className="text-sm text-gray-400" >Nama Kelas</h1>
+                            <InputForm className='bg-slate-300 ' errorMsg={errorMsg.class_name} type='text' htmlFor='Nama Kelas' value={form.class_name} onChange={handleChange} />
                         </div>
 
                     </div>
@@ -242,18 +239,18 @@ const Register = () => {
                             label='Tanggal Lahir'
                             showMonthAndYearPickers
                             aria-label='date'
-                            value={form.tanggal_lahir ?? parseDate(formatDate(dateNow))} // provide a default value if form.tanggal_lahir is null
+                            value={form.birthdate ?? parseDate(formatDate(dateNow))} // provide a default value if form.birthdate is null
                             variant={'bordered'}
-                            onChange={(e) => setForm({ ...form, tanggal_lahir: e })}
+                            onChange={(e) => setForm({ ...form, birthdate: e })}
                         />
-                        {errorMsg.tanggal_lahir && <p className="text-red-500 text-xs mt-1">{errorMsg.tanggal_lahir}</p>}
+                        {errorMsg.birthdate && <p className="text-red-500 text-xs mt-1">{errorMsg.birthdate}</p>}
                     </div>
 
-                    <InputForm className='bg-slate-300' errorMsg={errorMsg.alamat} placeholder='Alamat Lengkap' type='text' htmlFor='alamat' value={form.alamat} onChange={handleChange} />
+                    <InputForm className='bg-slate-300' errorMsg={errorMsg.address} placeholder='Alamat Lengkap' type='text' htmlFor='address' value={form.address} onChange={handleChange} />
 
                     <div className="flex gap-3">
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.email} placeholder='Masukkan Email' type='email' htmlFor='email' value={form.email} onChange={handleChange} />
-                        <InputForm className='bg-slate-300' errorMsg={errorMsg.number_phone} placeholder='Masukkan No HP' type='text' htmlFor='number_phone' value={form.number_phone} onChange={handleChange} />
+                        <InputForm className='bg-slate-300' errorMsg={errorMsg.phone} placeholder='Masukkan No HP' type='text' htmlFor='phone' value={form.phone} onChange={handleChange} />
                     </div>
 
                     <div className="relative">
