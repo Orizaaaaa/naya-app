@@ -207,11 +207,10 @@ function Page() {
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
-                <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">Editor Template Surat</h1>
+                <h1 className="text-3xl font-extrabold text-white mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
 
                 {/* Editor */}
                 <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Edit Template Surat</h2>
                     <div className="a4-page-editor-wrapper relative overflow-hidden rounded-md shadow-inner">
                         <JoditEditor
                             ref={editor}
@@ -226,67 +225,22 @@ function Page() {
                     </p>
                 </div>
 
-                {/* Form */}
-                <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Isi Data Surat</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {['nama', 'kelas', 'alasan', 'tanggal'].map((field) => (
-                            <div key={field}>
-                                <label htmlFor={field} className="block text-sm font-medium text-gray-700 mb-1 capitalize">
-                                    {field}:
-                                </label>
-                                <input
-                                    id={field}
-                                    type="text"
-                                    className="border border-gray-300 px-4 py-2 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                    placeholder={`Masukkan ${field}`}
-                                    value={(formData as any)[field]}
-                                    onChange={(e) =>
-                                        setFormData((prev) => ({ ...prev, [field]: e.target.value }))
-                                    }
-                                />
-                            </div>
-                        ))}
-                        {/* Input untuk URL Gambar Oriza Sativa */}
-                        <div>
-                            <label htmlFor="orizaSativaImageUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                                URL Gambar Oriza Sativa:
-                            </label>
-                            <input
-                                id="orizaSativaImageUrl"
-                                type="text"
-                                className="border border-gray-300 px-4 py-2 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                                placeholder="Masukkan URL gambar Oriza Sativa"
-                                value={formData.orizaSativaImageUrl}
-                                onChange={(e) =>
-                                    setFormData((prev) => ({ ...prev, orizaSativaImageUrl: e.target.value }))
-                                }
-                            />
-                        </div>
-                        {/* Input untuk File Gambar Tanda Tangan */}
-                        <div>
-                            <label htmlFor="signatureImageFile" className="block text-sm font-medium text-gray-700 mb-1">
-                                Unggah Gambar Tanda Tangan:
-                            </label>
-                            <input
-                                id="signatureImageFile"
-                                type="file"
-                                accept="image/*" // Hanya menerima file gambar
-                                className="border border-gray-300 px-4 py-2 rounded-md w-full focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                onChange={handleSignatureChange}
-                            />
-                            {formData.signatureImageUrl && (
-                                <p className="text-sm text-gray-500 mt-1">Gambar berhasil diunggah.</p>
-                            )}
-                        </div>
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <button
+                        onClick={handleGenerate}
+                        className="mt-6 w-full bg-yellow-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
+                    >
+                        Tampilkan Pratinjau
+                    </button>
                     <button
                         onClick={handleGenerate}
                         className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
                     >
-                        Tampilkan Pratinjau
+                        Simpan
                     </button>
                 </div>
+
+
 
                 {filledTemplate && (
                     <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
