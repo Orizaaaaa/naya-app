@@ -115,43 +115,41 @@ function Page() {
         setFilledTemplate(result);
     };
 
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = async () => {
         if (!printRef.current) {
             console.error("Print reference is not available.");
             return;
         }
 
-        // Dapatkan lebar dan tinggi elemen pratinjau yang di-render
+        const html2pdf = (await import('html2pdf.js')).default; // ⛔ Import hanya di client
+
         const previewWidth = printRef.current.offsetWidth;
         const previewHeight = printRef.current.offsetHeight;
 
         html2pdf()
             .set({
-                margin: [3, 3, 3, 3], // Margin atas, kiri, bawah, kanan (sesuai padding A4)
+                margin: [3, 3, 3, 3],
                 filename: 'surat-multi-halaman.pdf',
-                image: { type: 'png', quality: 0.98 }, // Mengubah type dari jpeg ke png
+                image: { type: 'png', quality: 0.98 },
                 html2canvas: {
-                    scale: 2, // Skala rendering HTML ke kanvas
+                    scale: 2,
                     useCORS: true,
-                    width: previewWidth, // Gunakan lebar pratinjau yang di-render
-                    windowWidth: previewWidth // Penting untuk konsistensi lebar
+                    width: previewWidth,
+                    windowWidth: previewWidth
                 },
                 jsPDF: {
                     unit: 'mm',
                     format: 'a4',
                     orientation: 'portrait',
-                    // Posisi X dan Y untuk memulai konten PDF
-                    // 3mm adalah margin kiri dan atas
                     x: 3,
                     y: 3,
                 },
-                // Menambahkan 'width' untuk secara eksplisit menentukan lebar area konten untuk rendering
-                // Lebar A4 (210mm) dikurangi margin kiri dan kanan (2 * 20mm) = 170mm
                 width: 170,
             })
             .from(printRef.current)
             .save();
     };
+
 
     // Fungsi untuk menangani perubahan input file tanda tangan
 
