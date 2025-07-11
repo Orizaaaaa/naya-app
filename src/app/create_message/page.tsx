@@ -154,20 +154,7 @@ function Page() {
     };
 
     // Fungsi untuk menangani perubahan input file tanda tangan
-    const handleSignatureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // Simpan Base64 string ke formData
-                setFormData((prev) => ({ ...prev, signatureImageUrl: reader.result as string }));
-                console.log("Signature Image Base64 URL:", reader.result); // Debugging log
-            };
-            reader.readAsDataURL(file); // Baca file sebagai Data URL (Base64)
-        } else {
-            setFormData((prev) => ({ ...prev, signatureImageUrl: '' })); // Kosongkan jika tidak ada file
-        }
-    };
+
 
     // Konfigurasi Jodit Editor
     const joditConfig = {
