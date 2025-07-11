@@ -21,14 +21,17 @@ function Page() {
     const fixedFooterTemplate = `
     <!-- Tanda Tangan -->
     <div style="margin-top: 50px; text-align: right;">
-        <p style="margin-bottom: 0; line-height: 1.5;">Hormat kami,</p>
-        <p style="margin-top: 0; margin-bottom: 0; line-height: 1.5;">(Nama Penanda Tangan)</p>
-        <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 150px; height: auto; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
+        <p style="margin-bottom: 0; line-height: 1.5;">Bandung, 09 Juli 2025</p>
+        <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
+        <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
+        <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd </p>
+        <p style="margin-bottom: 0; line-height: 1.5;">NIP. 197007202005011008</p>
     </div>
     `;
 
     // Konten yang akan diedit di Jodit Editor
     const [editableContent, setEditableContent] = useState<string>(`
+
             <div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
             <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
             <div style="text-align: center;">
@@ -47,9 +50,6 @@ function Page() {
                 </p>
             </div>
             </div>
-
-
-
 
     `);
 
