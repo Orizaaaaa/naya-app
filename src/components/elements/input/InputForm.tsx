@@ -39,7 +39,7 @@ function InputForm({
                 value={value}
                 placeholder={placeholder}
             />
-            {errorMsg && <p className="text-sm text-red">{errorMsg}</p>}
+            {errorMsg && <p className="text-sm text-red-800">{errorMsg}</p>}
         </div>
     );
 }

@@ -15,6 +15,7 @@ import { formatDate } from "@/utils/helper";
 import { parseDate } from '@internationalized/date'
 import { address } from "framer-motion/client";
 import DropdownCustom from "@/components/dropdown/dropdownCustom";
+import { registerUser } from "@/api/auth";
 // Pastikan ini ada
 
 const Register = () => {
@@ -168,7 +169,7 @@ const Register = () => {
         }
 
         if (!form.class_name) {
-            newErrorMsg.class_name = '*class_name wajib diisi';
+            newErrorMsg.class_name = '*Nama kelas wajib diisi';
             valid = false;
         }
 
@@ -179,7 +180,23 @@ const Register = () => {
             return;
         }
 
-        console.log('Data valid:', form);
+        // Jika lolos validasi
+
+        const { confirmPassword, ...dataWithoutConfirmPassword } = form;
+        const data = { ...dataWithoutConfirmPassword };
+        registerUser(data, (status: boolean, res: any) => {
+            if (res?.response?.data?.data?.error) {
+                setErrorMsg({
+                    ...errorMsg, email: 'Email sudah terdaftar',
+                })
+            }
+            if (status) {
+                router.push('/login');
+            }
+            setLoading(false);
+        });
+
+
         setLoading(false);
     };
 
@@ -194,6 +211,9 @@ const Register = () => {
             gender: key
         });
     };
+
+    console.log(form);
+
     return (
         <div className="register bg-black min-h-screen flex flex-col"> {/* Added flex-col */}
             <div className="container mx-auto">
@@ -209,8 +229,8 @@ const Register = () => {
                 <form className='p-6 bg-[#e9e9e9] rounded-lg m-3 w-[350px] sm:w-[400px] md:w-[450px] lg:w-[500px]' onSubmit={handleRegister}>
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.name} placeholder='Masukkan Nama' type='text' htmlFor='name' value={form.name} onChange={handleChange} />
                     <div className="flex gap-4">
-                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nisn} placeholder='Masukkan NISN' type='text' htmlFor='nik' value={form.nisn} onChange={handleChange} />
-                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nis} placeholder='Masukkan NIS' type='text' htmlFor='nik' value={form.nis} onChange={handleChange} />
+                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nisn} placeholder='Masukkan NISN' type='text' htmlFor='nisn' value={form.nisn} onChange={handleChange} />
+                        <InputForm className='bg-slate-300' errorMsg={errorMsg.nis} placeholder='Masukkan NIS' type='text' htmlFor='nis' value={form.nis} onChange={handleChange} />
                     </div>
 
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.place_of_birth} placeholder='Tempat Lahir' type='text' htmlFor='place_of_birth' value={form.place_of_birth} onChange={handleChange} />
@@ -226,7 +246,7 @@ const Register = () => {
                         </div>
                         <div className="w-full"> {/* Changed to w-full for better responsiveness */}
                             <h1 className="text-sm text-gray-400" >Nama Kelas</h1>
-                            <InputForm className='bg-slate-300 ' errorMsg={errorMsg.class_name} type='text' htmlFor='Nama Kelas' value={form.class_name} onChange={handleChange} />
+                            <InputForm className='bg-slate-300 ' errorMsg={errorMsg.class_name} type='text' htmlFor='class_name' value={form.class_name} onChange={handleChange} />
                         </div>
 
                     </div>
@@ -239,7 +259,7 @@ const Register = () => {
                             label='Tanggal Lahir'
                             showMonthAndYearPickers
                             aria-label='date'
-                            value={form.birthdate ?? parseDate(formatDate(dateNow))} // provide a default value if form.birthdate is null
+                            value={form.birthdate}
                             variant={'bordered'}
                             onChange={(e) => setForm({ ...form, birthdate: e })}
                         />
