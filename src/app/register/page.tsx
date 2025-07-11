@@ -13,8 +13,8 @@ import { IoEye } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/helper";
 import { parseDate } from '@internationalized/date'
-import DropdownCustom from "@/components/elements/dropdown/Dropdown";
 import { address } from "framer-motion/client";
+import DropdownCustom from "@/components/dropdown/dropdownCustom";
 // Pastikan ini ada
 
 const Register = () => {
