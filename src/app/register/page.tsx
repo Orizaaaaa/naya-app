@@ -11,7 +11,7 @@ import ButtonPrimary from "@/components/elements/buttonPrimary";
 import { AutocompleteItem, DatePicker, Spinner } from "@heroui/react";
 import { IoEye } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { formatDate } from "@/utils/helper";
+import { formatDate, formatDateStr } from "@/utils/helper";
 import { parseDate } from '@internationalized/date'
 import { address } from "framer-motion/client";
 import DropdownCustom from "@/components/dropdown/dropdownCustom";
@@ -212,7 +212,9 @@ const Register = () => {
         });
     };
 
+    console.log(formatDateStr(form.birthdate));
     console.log(form);
+
 
     return (
         <div className="register bg-black min-h-screen flex flex-col"> {/* Added flex-col */}

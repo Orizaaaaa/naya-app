@@ -1,10 +1,17 @@
 
 export const formatDate = (tanggal: any) => {
-    const date = new Date(tanggal);  // Pastikan 'tanggal' adalah objek Date
+    if (!tanggal) {
+        console.error("Tanggal tidak ada:", tanggal);
+        return "Invalid date";  // Mengembalikan nilai default jika tanggal tidak ada
+    }
 
-    // Cek apakah 'date' adalah objek Date yang valid
+    // Pastikan bahwa 'tanggal' merupakan string atau objek Date yang valid
+    const date = new Date(tanggal);
+
+    // Cek apakah objek Date valid
     if (isNaN(date.getTime())) {
-        throw new Error("Invalid date format");
+        console.error("Format tanggal tidak valid:", tanggal);
+        return "Invalid date";  // Mengembalikan nilai default jika format tanggal tidak valid
     }
 
     const tahun = date.getFullYear();
@@ -53,7 +60,7 @@ export function capitalizeWords(str: string): string {
 
 
 export const formatDateStr = (dateObj?: { month: number, day: number, year: number }) =>
-    dateObj ? `${dateObj.month.toString().padStart(2, '0')}/${dateObj.day.toString().padStart(2, '0')}/${dateObj.year.toString().padStart(4, '0')}` : '';
+    dateObj ? `${dateObj.month.toString().padStart(2, '0')}-${dateObj.day.toString().padStart(2, '0')}-${dateObj.year.toString().padStart(4, '0')}` : '';
 
 export const getFirstDayOfMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth(), 1);
