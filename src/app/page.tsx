@@ -93,9 +93,9 @@ const Login = () => {
         setLoading(false);
 
         // Redirect berdasarkan role
-        if (res.data.role === 'user') {
+        if (res.data.user.role === 'user') {
           router.push('/user_page');
-        } else if (res.data.role === 'admin') {
+        } else if (res.data.user.role === 'admin') {
           router.push('/dashboard');
         }
       } else {
