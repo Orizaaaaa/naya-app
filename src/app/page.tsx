@@ -79,6 +79,7 @@ const Login = () => {
     // Lakukan login
     await loginService(form, (status: boolean, res: any) => {
       if (status) {
+        console.log('kanjut', res.data);
         setErrorLogin('');
         const tokenCookies = `token=${res.data.token}`;
         const roleCookies = `role=${res.data.role}`;
@@ -92,14 +93,11 @@ const Login = () => {
         setLoading(false);
 
         // Redirect berdasarkan role
-        if (res.data.role === 'superadmin') {
-          router.push('/dashboard-super-admin');
-        } else if (res.data.role === 'user') {
-          router.push('/dashboard-user');
+        if (res.data.role === 'user') {
+          router.push('/user_page');
         } else if (res.data.role === 'admin') {
-          router.push('/dashboard-officer');
+          router.push('/dashboard');
         }
-
       } else {
         setErrorLogin('*Email atau password salah');
         console.log(res.data);
@@ -131,7 +129,7 @@ const Login = () => {
             </button>
             <InputForm errorMsg={errorMsg.password} className='form-input-login mb-2 bg-slate-100' htmlFor="password" onChange={handleChange} type={typePassword} value={form.password} placeholder="Masukkan Kata Sandi" />
           </div>
-          <p className='text-red my-3 text-sm'>{errorLogin}</p>
+          <p className='text-red-800 my-3 text-sm'>{errorLogin}</p>
           <ButtonPrimary typeButon={"submit"} className={`rounded-lg w-full mb-3 font-medium py-2 flex justify-center items-center`}>
             {loading ? <Spinner className={`w-5 h-5`} size="sm" color="white" /> : 'Masuk'}
           </ButtonPrimary>
