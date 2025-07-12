@@ -27,3 +27,12 @@ export const getAllRequestMessage = async () => {
         return []; // atau null, tergantung kebutuhan
     }
 };
+export const getAllTemplate = async () => {
+    try {
+        const res = await axiosInterceptor.get('/template/list');
+        return res.data; // ✅ return data
+    } catch (err) {
+        console.error(err);
+        return []; // atau null, tergantung kebutuhan
+    }
+};
