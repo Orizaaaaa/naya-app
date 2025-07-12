@@ -9,7 +9,7 @@ import { axiosInterceptor } from "./axiosInterceptor"
 //         });
 // }
 export const createMessageTemplate = async (form: any, callback: any) => {
-    await axiosInterceptor.post('/request', form)
+    await axiosInterceptor.post('/template', form)
         .then((result) => {
             callback(result.data)
         }).catch((err) => {

@@ -7,6 +7,9 @@ import InputForm from '@/components/elements/input/InputForm';
 import { Autocomplete, AutocompleteItem, DatePicker } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { formatDate } from '@/utils/helper';
+import { createMessageTemplate } from '@/api/method';
+import { useRouter } from 'next/navigation';
+
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
 // Jika Anda tidak memiliki komponen ini, Anda bisa menggantinya dengan div kosong atau menyesuaikan sesuai kebutuhan.
@@ -25,7 +28,7 @@ function Page() {
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
 
     const [form, setForm] = useState({
-        title: "",
+        name: "",
         type: "",
         body: `
         <div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
@@ -213,6 +216,19 @@ function Page() {
         });
     };
 
+    const router = useRouter();
+    const handleCreate = async () => {
+        try {
+            await createMessageTemplate(form, (result: any) => {
+                if (result) {
+                    router.push('/all_message');
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
@@ -221,34 +237,21 @@ function Page() {
                     <InputForm
                         className="bg-white "
                         placeholder="Masukkan Nama Surat"
-                        type="title"
-                        htmlFor="title"
-                        value={form.title}
+                        type="name"
+                        htmlFor="name"
+                        value={form.name}
                         onChange={handleChange}
                     />
                     <InputForm
                         className="bg-white "
-                        placeholder="Masukkan Deskripsi"
+                        placeholder="Masukkan Tipe"
                         type="text"
-                        htmlFor="description"
-                        value={form.description}
+                        htmlFor="type"
+                        value={form.type}
                         onChange={handleChange}
                     />
                 </div>
 
-                <div className="flex gap-3">
-                    <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)}>
-                        {dataStatus.map((animal) => (
-                            <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
-                        ))}
-                    </Autocomplete>
-                    <DatePicker
-                        showMonthAndYearPickers
-                        aria-label='date'
-                        value={form.date}
-                        onChange={(e: any) => setForm({ ...form, date: e })}
-                    />
-                </div>
 
                 {/* Editor */}
                 <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
@@ -274,7 +277,7 @@ function Page() {
                         Tampilkan Pratinjau
                     </button>
                     <button
-                        onClick={handleGenerate}
+                        onClick={handleCreate}
                         className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
                     >
                         Simpan
