@@ -219,7 +219,7 @@ function Page() {
                 <h1 className="text-3xl font-extrabold text-white mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
                 <div className="grid grid-cols-2 gap-3 w-full ">
                     <InputForm
-                        className="bg-slate-300 "
+                        className="bg-white "
                         placeholder="Masukkan Nama Surat"
                         type="title"
                         htmlFor="title"
@@ -227,7 +227,7 @@ function Page() {
                         onChange={handleChange}
                     />
                     <InputForm
-                        className="bg-slate-300 "
+                        className="bg-white "
                         placeholder="Masukkan Deskripsi"
                         type="text"
                         htmlFor="description"
