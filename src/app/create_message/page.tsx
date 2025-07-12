@@ -3,6 +3,10 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
+import InputForm from '@/components/elements/input/InputForm';
+import { Autocomplete, AutocompleteItem, DatePicker } from '@heroui/react';
+import { parseDate } from '@internationalized/date';
+import { formatDate } from '@/utils/helper';
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
 // Jika Anda tidak memiliki komponen ini, Anda bisa menggantinya dengan div kosong atau menyesuaikan sesuai kebutuhan.
@@ -15,6 +19,7 @@ function Page() {
     // ========================
     // STATE & REFS
     // ========================
+    const dateNow = new Date();
     const editor = useRef(null);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
@@ -43,13 +48,13 @@ function Page() {
         </div> 
     `,
         description: "",
-        date: "",
-        status: "",
+        date: parseDate(formatDate(dateNow)),
+        status: "menunggu",
         user_id: "",
     });
 
     const dataSiswa = {
-        name: "isilmal",
+        name: "",
         email: "",
         password: "",
         address: "",
@@ -64,6 +69,10 @@ function Page() {
         nis: ""
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+    };
 
     const [filledTemplate, setFilledTemplate] = useState<string>('');
     const [isMultiPage, setIsMultiPage] = useState<boolean>(false);
@@ -192,11 +201,54 @@ function Page() {
         },
     };
 
+    const dataStatus = [
+        { key: "laki-laki", label: "Laki-laki", value: "Laki-laki" },
+        { key: "perempuan", label: "Perempuan", value: "Perempuan" },
+    ]
+
+    const onSelectionChange = (key: string) => {
+        setForm({
+            ...form,
+            type: key
+        });
+    };
 
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold text-white mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
+                <div className="grid grid-cols-2 gap-3 w-full ">
+                    <InputForm
+                        className="bg-slate-300 "
+                        placeholder="Masukkan Nama Surat"
+                        type="title"
+                        htmlFor="title"
+                        value={form.title}
+                        onChange={handleChange}
+                    />
+                    <InputForm
+                        className="bg-slate-300 "
+                        placeholder="Masukkan Deskripsi"
+                        type="text"
+                        htmlFor="description"
+                        value={form.description}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="flex gap-3">
+                    <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)}>
+                        {dataStatus.map((animal) => (
+                            <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
+                        ))}
+                    </Autocomplete>
+                    <DatePicker
+                        showMonthAndYearPickers
+                        aria-label='date'
+                        value={form.date}
+                        onChange={(e: any) => setForm({ ...form, date: e })}
+                    />
+                </div>
 
                 {/* Editor */}
                 <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
