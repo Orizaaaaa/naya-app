@@ -58,6 +58,7 @@ const Register = () => {
         nis: '',
         nisn: '',
         address: '',
+        responErrorApi: '',
     });
 
     const togglePassword = () => {
@@ -104,7 +105,7 @@ const Register = () => {
         const newErrorMsg = {
             name: '', email: '', password: '', confirmPassword: '', image: '', role: '',
             phone: '', place_of_birth: '', birthdate: '',
-            gender: '', class_name: '', nis: '', nisn: '', address: '',
+            gender: '', class_name: '', nis: '', nisn: '', address: '', responErrorApi: ''
         };
         let valid = true;
 
@@ -193,12 +194,11 @@ const Register = () => {
             }
             if (status) {
                 router.push('/');
+            } else {
+                setErrorMsg((prev) => ({ ...prev, responErrorApi: 'Email atau Password salah' }));
             }
             setLoading(false);
         });
-
-
-        setLoading(false);
     };
 
     const dataStatus = [
@@ -302,7 +302,8 @@ const Register = () => {
                      bg-primary" >
                         {loading ? <Spinner color="white" /> : 'Daftar'}
                     </ButtonPrimary>
-                    <p className='text-sm'>Sudah punya akun? <Link href="/login" className='text-primary font-medium'>Masuk</Link></p>
+                    {errorMsg.responErrorApi && <p className="text-red-800 text-xs mt-1">{errorMsg.responErrorApi}</p>}
+                    <p className='text-sm'>Sudah punya akun? <Link href="/" className='text-primary font-medium'>Masuk</Link></p>
                 </form>
             </div>
         </div>
