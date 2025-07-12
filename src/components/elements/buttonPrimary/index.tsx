@@ -2,7 +2,7 @@ import React from 'react'
 
 type Props = {
     children?: React.ReactNode
-    onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    onClick?: any
     className?: string
     typeButon?: any
     disabled?: boolean

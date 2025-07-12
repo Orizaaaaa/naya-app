@@ -8,7 +8,7 @@ import { FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
 import ButtonPrimary from "@/components/elements/buttonPrimary";
-import { AutocompleteItem, DatePicker, Spinner } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, DatePicker, Spinner } from "@heroui/react";
 import { IoEye } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { formatDate, formatDateStr } from "@/utils/helper";
@@ -103,7 +103,7 @@ const Register = () => {
 
         const newErrorMsg = {
             name: '', email: '', password: '', confirmPassword: '', image: '', role: '',
-            phone: '', nik: '', place_of_birth: '', birthdate: '',
+            phone: '', place_of_birth: '', birthdate: '',
             gender: '', class_name: '', nis: '', nisn: '', address: '',
         };
         let valid = true;
@@ -134,11 +134,6 @@ const Register = () => {
             valid = false;
         }
 
-        if (!form.nik || !numberRegex.test(form.nik) || form.nik.length !== 16) {
-            newErrorMsg.nik = '*NIK harus 16 digit angka';
-            valid = false;
-        }
-
         if (!form.phone || !phoneRegex.test(form.phone)) {
             newErrorMsg.phone = '*No HP harus diawali 628 dan minimal 10 digit';
             valid = false;
@@ -163,8 +158,8 @@ const Register = () => {
             newErrorMsg.place_of_birth = '*Tempat lahir wajib diisi';
             valid = false;
         }
-        if (!form.adress) {
-            newErrorMsg.place_of_birth = '*Alamat wajib diisi';
+        if (!form.address) {
+            newErrorMsg.address = '*Alamat wajib diisi';
             valid = false;
         }
 
@@ -183,15 +178,21 @@ const Register = () => {
         // Jika lolos validasi
 
         const { confirmPassword, ...dataWithoutConfirmPassword } = form;
-        const data = { ...dataWithoutConfirmPassword };
+
+        const data = {
+            ...dataWithoutConfirmPassword,
+            birthdate: formatDateStr(form.birthdate), // pastikan penamaan tepat
+        };
+
+        console.log('data boss', data);
+
+
         registerUser(data, (status: boolean, res: any) => {
-            if (res?.response?.data?.data?.error) {
-                setErrorMsg({
-                    ...errorMsg, email: 'Email sudah terdaftar',
-                })
+            if (res) {
+                console.log(res);
             }
             if (status) {
-                router.push('/login');
+                router.push('/');
             }
             setLoading(false);
         });
@@ -201,8 +202,8 @@ const Register = () => {
     };
 
     const dataStatus = [
-        { label: "Laki-laki", value: "Laki-laki" },
-        { label: "Perempuan", value: "Perempuan" },
+        { key: "laki-laki", label: "Laki-laki", value: "Laki-laki" },
+        { key: "perempuan", label: "Perempuan", value: "Perempuan" },
     ]
 
     const onSelectionChange = (key: string) => {
@@ -214,6 +215,7 @@ const Register = () => {
 
     console.log(formatDateStr(form.birthdate));
     console.log(form);
+    console.log(loading);
 
 
     return (
@@ -241,9 +243,16 @@ const Register = () => {
                     <div className="flex gap-3">
                         <div className="w-full">
                             <h1 className="text-sm text-gray-400" >Jenis Kelamin</h1>
-                            <DropdownCustom clearButton={false} defaultItems={dataStatus} onSelect={(e: any) => onSelectionChange(e)}>
+
+                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)}>
+                                {dataStatus.map((animal) => (
+                                    <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
+                                ))}
+                            </Autocomplete>
+
+                            {/* <DropdownCustom clearButton={false} defaultItems={dataStatus} onSelect={(e: any) => onSelectionChange(e)}>
                                 {(item: any) => <AutocompleteItem key={item.value}>{item.label}</AutocompleteItem>}
-                            </DropdownCustom>
+                            </DropdownCustom> */}
                             {errorMsg.gender && <p className="text-red-500 text-xs mt-1">{errorMsg.gender}</p>}
                         </div>
                         <div className="w-full"> {/* Changed to w-full for better responsiveness */}
@@ -289,8 +298,9 @@ const Register = () => {
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.confirmPassword} htmlFor="confirmPassword" onChange={handleChange} type={typeConfirmPassword} value={form.confirmPassword} placeholder="Konfirmasi Kata Sandi" />
                     </div>
 
-                    <ButtonPrimary typeButon="submit" className="rounded-lg w-full mb-3 font-medium py-2 flex justify-center items-center bg-primary">
-                        {loading ? <Spinner className="w-5 h-5" size="sm" color="white" /> : 'Daftar'}
+                    <ButtonPrimary disabled={loading} typeButon="submit" className="rounded-lg cursor-pointer w-full mb-3 font-medium py-2 flex justify-center items-center
+                     bg-primary" >
+                        {loading ? <Spinner color="white" /> : 'Daftar'}
                     </ButtonPrimary>
                     <p className='text-sm'>Sudah punya akun? <Link href="/login" className='text-primary font-medium'>Masuk</Link></p>
                 </form>
