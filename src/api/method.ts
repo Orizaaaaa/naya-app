@@ -36,3 +36,31 @@ export const getAllTemplate = async () => {
         return []; // atau null, tergantung kebutuhan
     }
 };
+
+
+export const getTemplateById = (id: string, callback: any) => {
+    axiosInterceptor(`/template/${id}`)
+        .then((result) => {
+            callback(result.data)
+        }).catch((err) => {
+            console.log(err);
+        });
+}
+
+export const deleteTemplate = (id: any, callback: any) => {
+    axiosInterceptor.delete(`/template/${id}`)
+        .then((result) => {
+            callback(result.data)
+        }).catch((err) => {
+            console.log(err);
+        });
+}
+
+export const updateTemplate = async (id: any, form: any, callback: any) => {
+    await axiosInterceptor.put(`/template/${id}`, form)
+        .then((result) => {
+            callback(result.data)
+        }).catch((err) => {
+            console.log(err);
+        });
+}
