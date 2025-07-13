@@ -90,3 +90,13 @@ export const deleteRequest = async (id: any) => {
         throw err;
     }
 }
+
+export const getMessageUser = async (id: string) => {
+    try {
+        const result = await axiosInterceptor.get(`/request/${id}`);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
