@@ -295,7 +295,7 @@ const Page = () => {
 
     return (
         <DefaultLayout>
-            <h1 className="mt-2 text-white text-2xl mb-3">Permintaan surat siswa</h1>
+            <h1 className="mt-2 text-white text-2xl mb-3">PERMINTAAN SURAT SISWA</h1>
             <Table
                 aria-label="Daftar Permintaan Surat"
                 bottomContent={
@@ -332,10 +332,10 @@ const Page = () => {
                                 <TableCell>
                                     {columnKey === 'action' ? (
                                         <div className="flex gap-2">
-                                            <button onClick={() => openModalSend(item)} className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
+                                            <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
                                                 KIRIM SURAT
                                             </button>
-                                            <button className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition">
+                                            <button className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
                                                 DELETE
                                             </button>
                                         </div>
@@ -379,12 +379,12 @@ const Page = () => {
                     <div className="flex justify-end gap-2 mt-12">
                         <button
                             type='submit'
-                            className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
+                            className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
                         >
                             KIRIM
                         </button>
                         <button
-                            className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition"
+                            className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
                             onClick={onClose}
                         >
                             BATAL
@@ -400,7 +400,7 @@ const Page = () => {
                         {/* Pratinjau A4 yang terlihat */}
                         <div
                             ref={printRef}
-                            className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-md overflow-hidden"
+                            className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-lg-md overflow-hidden"
                             style={{
                                 position: 'relative',
                                 zIndex: -9999, // paling bawah

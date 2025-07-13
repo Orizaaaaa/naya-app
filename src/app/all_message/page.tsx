@@ -45,6 +45,7 @@ const page = (props: Props) => {
     }
     return (
         <DefaultLayout>
+            <h1 className="mt-2 text-white text-2xl mb-3">SEMUA TEMPLATE SURAT </h1>
             <div className="grid grid-cols-4 gap-4">
                 {data?.map((item: any) => (
                     <SpotlightCard key={item.id} className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
