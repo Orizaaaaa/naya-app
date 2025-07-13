@@ -8,6 +8,7 @@ type Props = {}
 
 const page = (props: Props) => {
     const id = '68713d761f1a92d8a4285489'
+
     const [loading, setLoading] = useState(false);
     const [form, setForm]: any = useState({
         title: "",
