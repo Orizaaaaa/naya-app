@@ -1,7 +1,8 @@
 'use client';
 
-import { getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method';
+import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method';
 import ModalDefault from '@/components/fragments/modal/modal';
+import ModalAlert from '@/components/fragments/modal/modalAlert';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
 import { formatDate, formatTanggalToIndo } from '@/utils/helper';
 import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
@@ -11,6 +12,7 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const Page = () => {
+    const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
@@ -20,6 +22,7 @@ const Page = () => {
     const [templates, setTemplate] = useState<any[]>([])
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 4;
+    const [id, setId] = React.useState('');
     const [form, setForm] = useState({
         _id: "",
         title: "",
@@ -289,6 +292,19 @@ const Page = () => {
             }
         })
     }
+
+    const openModalDelete = (item: any) => {
+        setId(item.id);
+        onWarningOpen();
+    }
+    const handleDelete = async () => {
+        deleteRequest(id).then((result) => {
+            if (result) {
+                fetchData();
+                onWarningClose();
+            }
+        })
+    }
     console.log("data request", data);
     console.log("data form", form);
 
@@ -335,7 +351,7 @@ const Page = () => {
                                             <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
                                                 KIRIM SURAT
                                             </button>
-                                            <button className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
+                                            <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
                                                 DELETE
                                             </button>
                                         </div>
@@ -393,6 +409,13 @@ const Page = () => {
                 </form>
             </ModalDefault>
 
+            <ModalAlert isOpen={isWarningOpen} onClose={onWarningClose} >
+                apakah anda yakin akan menghapus surat ini ?
+                <div className="flex justify-end gap-3">
+                    <button className='bg-red-900  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={onWarningClose}>Tidak</button>
+                    <button className='bg-blue-500  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={handleDelete} >Ya</button>
+                </div>
+            </ModalAlert>
 
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 {filledTemplate && (
@@ -441,6 +464,7 @@ const Page = () => {
 
                 )}
             </div>
+
         </DefaultLayout>
     );
 };
