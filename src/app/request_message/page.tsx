@@ -338,9 +338,6 @@ const Page = () => {
                                             <button className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition">
                                                 DELETE
                                             </button>
-                                            <button onClick={() => generateDataDownload(item)} className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition">
-                                                DOWNLOAD
-                                            </button>
                                         </div>
                                     ) :
                                         (
