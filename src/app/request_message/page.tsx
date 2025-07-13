@@ -229,6 +229,26 @@ const Page = () => {
 
     console.log('form', form);
 
+    const itemsDropdown = [
+        {
+            key: "new",
+            label: "New file",
+        },
+        {
+            key: "copy",
+            label: "Copy link",
+        },
+        {
+            key: "edit",
+            label: "Edit file",
+        },
+        {
+            key: "delete",
+            label: "Delete file",
+        },
+    ];
+
+
     return (
         <DefaultLayout>
             <h1 className="mt-2 text-white text-2xl mb-3">Permintaan surat siswa</h1>
@@ -295,24 +315,16 @@ const Page = () => {
             </Table>
 
 
-
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 {filledTemplate && (
-                    <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200 ">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Pratinjau Dokumen A4 Otomatis</h2>
-
-                        {isMultiPage && (
-                            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-md" role="alert">
-                                <p className="font-bold">Perhatian:</p>
-                                <p>Konten ini melebihi satu halaman A4 dan akan terbagi menjadi beberapa halaman saat diunduh sebagai PDF.</p>
-                            </div>
-                        )}
-
+                    <>
                         {/* Pratinjau A4 yang terlihat */}
                         <div
                             ref={printRef}
                             className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-md overflow-hidden"
                             style={{
+                                position: 'relative',
+                                zIndex: -9999, // paling bawah
                                 width: '210mm',
                                 minHeight: '297mm', // Gunakan minHeight agar bisa memanjang
                                 padding: '20mm',
@@ -346,14 +358,7 @@ const Page = () => {
                             }}
                             dangerouslySetInnerHTML={{ __html: filledTemplate }}
                         />
-
-                        <button
-                            onClick={handleDownloadPDF}
-                            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-                        >
-                            Unduh PDF
-                        </button>
-                    </div>
+                    </>
 
                 )}
             </div>
