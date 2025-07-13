@@ -47,8 +47,6 @@ const Page = () => {
 
 
 
-
-    const editor = useRef(null);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
 
@@ -134,16 +132,6 @@ const Page = () => {
         []
     );
 
-    const handleGenerate = () => {
-        const fullHtmlTemplate = `
-          <div style="position: relative; min-height: 297mm;">
-            ${form.body}
-            ${fixedFooterTemplate}
-          </div>
-        `;
-        const result = generateFromTemplate(fullHtmlTemplate, form.user);
-        setFilledTemplate(result);
-    };
 
     // ========================
     // FUNCTION: DOWNLOAD PDF
@@ -179,39 +167,6 @@ const Page = () => {
             })
             .from(printRef.current)
             .save();
-    };
-
-    // ========================
-    // JODIT CONFIG
-    // ========================
-    const joditConfig = {
-        readonly: false,
-        height: 'auto',
-        minHeight: '297mm',
-        width: '100%',
-        toolbarSticky: false,
-        iframe: false,
-        buttons:
-            'bold,italic,underline,strikethrough,|,ul,ol,|,font,fontsize,lineHeight,paragraph,align,|,image,link,table,code,selectall,cut,copy,paste',
-        extraButtons: ['image'],
-        image: {
-            openOnDblClick: true,
-            uploader: {
-                insertImageAsBase64URI: true,
-            },
-            popap: {
-                open: 'insertImage',
-                elements: [
-                    'image',
-                    'imageSrc',
-                    'imageAlt',
-                    'imageSize',
-                    'imageMargins',
-                    'imageAlign',
-                    'imageRemove',
-                ],
-            },
-        },
     };
 
     const generateDataDownload = async (item: any) => {
@@ -339,40 +294,11 @@ const Page = () => {
                 </TableBody>
             </Table>
 
-            <div className="p-4 space-y-6 max-w-4xl mx-auto mt-10">
-                <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
-                    <div className="a4-page-editor-wrapper relative overflow-hidden rounded-md shadow-inner">
-                        <JoditEditor
-                            ref={editor}
-                            value={form.body} // Menggunakan editableContent sebagai nilai Jodit
-                            config={joditConfig}
-                            onBlur={(e) => setForm({ ...form, body: e })} // Memperbarui editableContent
-                        />
-                        <div className="absolute inset-0 border-4 border-dashed border-blue-200 pointer-events-none rounded-md"></div>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                        Ukuran editor ini disesuaikan agar menyerupai halaman A4.
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                    <button
-                        onClick={handleGenerate}
-                        className="mt-6 w-full bg-yellow-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
-                    >
-                        Tampilkan Pratinjau
-                    </button>
-                    <button
-                        onClick={handleGenerate}
-                        className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
-                    >
-                        Simpan
-                    </button>
-                </div>
 
 
+            <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 {filledTemplate && (
-                    <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200">
+                    <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-200 ">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">Pratinjau Dokumen A4 Otomatis</h2>
 
                         {isMultiPage && (
