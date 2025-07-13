@@ -16,6 +16,7 @@ import {
 } from "@heroui/react";
 import { FaSquarePen } from 'react-icons/fa6'
 import CardBar from '@/components/fragments/cardBox/CardBar'
+import { IoSearch } from 'react-icons/io5'
 
 type Props = {}
 
@@ -34,79 +35,60 @@ const page = (props: Props) => {
 
     return (
         <DefaultLayout>
-            <div className="grid grid-cols-[3fr_1fr] gap-8">
-                {/* Kiri - besar */}
-                <div className="">
-                    <div className="grid grid-cols-3 gap-4">
 
-                        <CardBar className='bg-blue-500' text='Jumlah Surat' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
-                        <CardBar className='bg-secondBlack' text='Surat yang harus di setujui' value='199' icon={<FaSquarePen size={20} color="white" />} />
-                        <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
+            {/* Kiri - besar */}
+            <div className="">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
 
-
-                    </div>
-
-
-                    <h1 className='mt-16 text-white text-2xl mb-3 ' >Permintaan surat siswa</h1>
-                    <Table
-                        aria-label="Example table with client side pagination "
-                        bottomContent={
-                            <div className="flex w-full justify-center">
-                                <Pagination
-                                    isCompact
-                                    showControls
-                                    showShadow
-                                    color="secondary"
-                                    page={page}
-                                    total={pages}
-                                    onChange={(page) => setPage(page)}
-                                />
-                            </div>
-                        }
-                        classNames={{
-                            // bagian kepala tabel
-                            th: "text-white bg-black",        // teks kolom header
-                            // teks isi cell
-                            wrapper: "min-h-[222px] bg-[#16181a] text-white",
-                        }}
-                    >
-                        <TableHeader>
-                            <TableColumn key="name">NAME</TableColumn>
-                            <TableColumn key="role">ROLE</TableColumn>
-                            <TableColumn key="status">STATUS</TableColumn>
-                        </TableHeader>
-                        <TableBody items={items}>
-                            {(item: any) => (
-                                <TableRow key={item.name}>
-                                    {(columnKey: any) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                    <CardBar className='bg-blue-500' text='Jumlah Surat' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
+                    <CardBar className='bg-secondBlack' text='Surat yang harus di setujui' value='199' icon={<FaSquarePen size={20} color="white" />} />
+                    <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
                 </div>
 
 
-                <div >
-                    {/* Kanan - kecil */}
-                    <div className="p-4 rounded-lg bg-secondBlack text-white">
-                        <h1 className='text-center  text-white py-2 rounded-lg font-medium' >TERAKHIR DI SETUJUI</h1>
-                        <div className="text mt-5">
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Oriza Sativa</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Alya Prameswari</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Bagas Wicaksono</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Citra Maharani</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Dimas Aditya</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Eka Lestari</h1>
-                            <h1 className='mb-3 bg-slate-200 rounded-lg text-black p-2'>Farhan Naufal</h1>
-
+                <h1 className='mt-16 text-white text-2xl mb-3 ' >PERMINTAAN SURAT SISWA</h1>
+                <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom" >
+                    <IoSearch color="#2c80fd" size={20} />
+                    <input placeholder="SEARCH" className=" border-none w-full text-white placeholder-gray-500 outline-none focus:ring-0" type="text" />
+                </div>
+                <Table
+                    aria-label="Example table with client side pagination "
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                isCompact
+                                showControls
+                                showShadow
+                                color="secondary"
+                                page={page}
+                                total={pages}
+                                onChange={(page) => setPage(page)}
+                            />
                         </div>
-                    </div>
-
-
-                </div>
-
-
+                    }
+                    classNames={{
+                        // bagian kepala tabel
+                        th: "text-white bg-black",        // teks kolom header
+                        // teks isi cell
+                        wrapper: "min-h-[222px] bg-[#16181a] text-white",
+                    }}
+                >
+                    <TableHeader>
+                        <TableColumn key="name">NAME</TableColumn>
+                        <TableColumn key="role">ROLE</TableColumn>
+                        <TableColumn key="status">STATUS</TableColumn>
+                    </TableHeader>
+                    <TableBody items={items}>
+                        {(item: any) => (
+                            <TableRow key={item.name}>
+                                {(columnKey: any) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
+
+
 
 
 
