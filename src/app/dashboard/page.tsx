@@ -192,6 +192,11 @@ const page = (props: Props) => {
             }
         })
     }
+
+    const jumlahSurat = templates.length.toString(); // Mengubah menjadi string
+    const suratBelumDisetujui = data.filter((item) => item.status !== 'Selesai').length.toString(); // Mengubah menjadi string
+    const siswaSelesai = data.filter((item) => item.status === 'Selesai').length.toString(); // Mengubah menjadi string
+
     console.log("data request", data);
     console.log("data form", form);
 
@@ -203,9 +208,9 @@ const page = (props: Props) => {
             <div className="">
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
 
-                    <CardBar className='bg-blue-500' text='Jumlah Surat' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
-                    <CardBar className='bg-secondBlack' text='Surat yang harus di setujui' value='199' icon={<FaSquarePen size={20} color="white" />} />
-                    <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value='199' icon={<MdOutlineMessage size={20} color="white" />} />
+                    <CardBar className='bg-blue-500' text='Jumlah Surat' value={jumlahSurat} icon={<MdOutlineMessage size={20} color="white" />} />
+                    <CardBar className='bg-secondBlack' text='Surat yang harus di setujui' value={suratBelumDisetujui} icon={<FaSquarePen size={20} color="white" />} />
+                    <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value={siswaSelesai} icon={<MdOutlineMessage size={20} color="white" />} />
                 </div>
 
 
