@@ -1,16 +1,14 @@
 'use client'
 import { getMessageUser } from '@/api/method'
+import { Spinner } from '@heroui/react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { MdDownloading } from 'react-icons/md'
 
 type Props = {}
 
 const page = (props: Props) => {
-    const printRef = useRef<HTMLDivElement>(null);
     const id = '68713d761f1a92d8a4285489'
-    const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
-    const [filledTemplate, setFilledTemplate] = useState<string>('');
-    const [isMultiPage, setIsMultiPage] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
     const [form, setForm]: any = useState({
         title: "",
         description: "",
@@ -61,22 +59,6 @@ const page = (props: Props) => {
             </div>
           `;
 
-    // ========================
-    // EFFECT: CEK MULTI HALAMAN
-    // ========================
-    useEffect(() => {
-        if (filledTemplate && measurementRef.current) {
-            const timeoutId = setTimeout(() => {
-                const contentHeight = measurementRef.current?.scrollHeight || 0;
-                const a4HeightInPx = measurementRef.current?.offsetHeight || 0;
-                const tolerance = 5;
-
-                setIsMultiPage(contentHeight > a4HeightInPx + tolerance);
-            }, 100);
-
-            return () => clearTimeout(timeoutId);
-        }
-    }, [filledTemplate]);
 
     // ========================
     // FUNCTION: GENERATE TEMPLATE
@@ -99,49 +81,46 @@ const page = (props: Props) => {
 
     // yang ini yang untuk download asli
     const generateDataDownload = async (item: any) => {
-        // 2. Generate isi HTML
+        setLoading(true);
+        // 1. Generate HTML isi
         const fullHtmlTemplate = `
-            <div style="position: relative; min-height: 297mm;">
+                <div style="position: relative; min-height: 297mm;">
                 ${form.body}
                 ${fixedFooterTemplate}
-            </div>
-        `;
+                </div>
+            `;
 
+        // 2. Gantikan placeholder data
         const result = generateFromTemplate(fullHtmlTemplate, form.user);
-        setFilledTemplate(result);
 
-        // 4. Lanjut download PDF
-        if (!printRef.current) {
-            console.error("Print reference is not available.");
-            return;
-        }
+        // 3. Buat elemen div virtual (tidak ditampilkan ke halaman)
+        const virtualElement = document.createElement('div');
+        virtualElement.innerHTML = result;
 
+        // 4. Import html2pdf dan lakukan konversi
         const html2pdf = (await import('html2pdf.js')).default;
-        const previewWidth = printRef.current.offsetWidth;
 
         html2pdf()
             .set({
-                margin: [3, 3, 3, 3],
-                filename: 'surat-multi-halaman.pdf',
+                margin: [10, 10, 10, 10],
+                filename: 'surat-permohonan.pdf',
                 image: { type: 'png', quality: 0.98 },
                 html2canvas: {
                     scale: 2,
                     useCORS: true,
-                    width: previewWidth,
-                    windowWidth: previewWidth,
                 },
                 jsPDF: {
                     unit: 'mm',
                     format: 'a4',
                     orientation: 'portrait',
-                    x: 3,
-                    y: 3,
                 },
-                width: 170,
             })
-            .from(printRef.current)
+            .from(virtualElement) // langsung dari elemen virtual
             .save();
+
+        setLoading(false);
     };
+
 
 
 
@@ -149,57 +128,20 @@ const page = (props: Props) => {
 
     return (
         <div className="bg-black h-screen flex items-center justify-center">
-            <button onClick={() => generateDataDownload(form)} className="bg-primary text-white px-5 py-2 rounded-lg flex gap-3 justify-center items-center cursor-pointer">
-                DOWNLOAD
-                <MdDownloading size={25} color="white" />
-            </button>
-            <div className="p-4 space-y-6 max-w-4xl mx-auto">
-                {filledTemplate && (
+            <button
+                onClick={() => generateDataDownload(form)}
+                className="bg-primary text-white px-5 py-2 rounded-lg flex gap-3 justify-center items-center cursor-pointer"
+            >
+                {loading ? (
+                    <Spinner className="w-5 h-5" size="sm" color="white" />
+                ) : (
                     <>
-                        {/* Pratinjau A4 yang terlihat */}
-                        <div
-                            ref={printRef}
-                            className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-lg-md overflow-hidden"
-                            style={{
-                                position: 'absolute',
-                                zIndex: -9999, // paling bawah
-                                width: '210mm',
-                                minHeight: '297mm', // Gunakan minHeight agar bisa memanjang
-                                padding: '20mm',
-                                boxSizing: 'border-box',
-                                fontFamily: 'Times New Roman, serif',
-                                lineHeight: '1.5',
-                                fontSize: '12pt',
-                                // border: '1px solid #ddd', // Baris ini dihapus
-                            }}
-                            dangerouslySetInnerHTML={{ __html: filledTemplate }}
-                        />
-
-                        {/* Div tersembunyi untuk pengukuran tinggi konten */}
-                        <div
-                            ref={measurementRef}
-                            className="a4-page-preview-hidden"
-                            style={{
-                                position: 'absolute',
-                                left: '-9999px', // Sembunyikan dari tampilan
-                                top: '-9999px',
-                                width: '210mm',
-                                minHeight: '297mm',
-                                padding: '20mm',
-                                boxSizing: 'border-box',
-                                fontFamily: 'Times New Roman, serif',
-                                lineHeight: '1.5',
-                                fontSize: '12pt',
-                                overflow: 'hidden', // Penting agar scrollHeight akurat
-                                visibility: 'hidden', // Sembunyikan tapi tetap render
-                                height: 'auto', // Biarkan tingginya menyesuaikan konten
-                            }}
-                            dangerouslySetInnerHTML={{ __html: filledTemplate }}
-                        />
+                        DOWNLOAD
+                        <MdDownloading size={20} color="white" />
                     </>
-
                 )}
-            </div>
+            </button>
+
         </div>
 
     )
