@@ -124,11 +124,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <NavigationList icon={<BsPersonFillGear size={24} />} title="Permintaan Surat" pathname="/request_message" />
               <NavigationList icon={<LuBookPlus size={24} />} title="Buat Surat" pathname="/create_message" />
               <NavigationList icon={<SiGitbook size={24} />} title="Semua Surat" pathname="/all_message" />
-
-
-              <ButtonSecondary className="w-full py-1 rounded-md font-medium mt-20" onClick={handleLogout} >Logout</ButtonSecondary>
-
-
+              <ButtonSecondary className="w-full py-1 rounded-md font-medium mt-20 cursor-pinter" onClick={handleLogout} >Logout</ButtonSecondary>
               {/* <!-- Menu Item Calendar -->
               <NavigationList icon={<IoCalendarOutline size={19} />} title="Calendar" pathname="/calendar" /> */}
 
