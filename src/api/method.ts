@@ -58,11 +58,12 @@ export const deleteTemplate = (id: any, callback: any) => {
         });
 }
 
-export const updateTemplate = async (id: any, form: any, callback: any) => {
-    await axiosInterceptor.put(`/template/${id}`, form)
-        .then((result) => {
-            callback(result.data)
-        }).catch((err) => {
-            console.log(err);
-        });
+export const updateTemplate = async (id: any, form: any) => {
+    try {
+        const result = await axiosInterceptor.put(`/template/${id}`, form);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }

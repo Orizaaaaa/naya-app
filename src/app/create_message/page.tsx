@@ -200,18 +200,6 @@ function Page() {
         },
     };
 
-    const dataStatus = [
-        { key: "laki-laki", label: "Laki-laki", value: "Laki-laki" },
-        { key: "perempuan", label: "Perempuan", value: "Perempuan" },
-    ]
-
-    const onSelectionChange = (key: string) => {
-        setForm({
-            ...form,
-            type: key
-        });
-    };
-
     const router = useRouter();
     const handleCreate = async () => {
         try {
