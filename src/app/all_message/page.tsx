@@ -4,12 +4,14 @@ import SpotlightCard from '@/components/fragments/cardBox/CardSpot'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import DefaultLayout from '@/components/layouts/DefaultLayout'
 import { useDisclosure } from '@heroui/react'
+import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { LuSquarePen } from 'react-icons/lu'
 
 type Props = {}
 
 const page = (props: Props) => {
+    const router = useRouter();
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const openModalDelete = () => {
         onWarningOpen()
@@ -36,11 +38,11 @@ const page = (props: Props) => {
         <DefaultLayout>
             <div className="grid grid-cols-4 gap-4">
                 {data?.map((item: any) => (
-                    <SpotlightCard className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
+                    <SpotlightCard key={item.id} className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
                         <h1>{item.name}</h1>
                         <h2>{item.type}</h2>
                         <div className="grid grid-cols-2 gap-5 mt-5">
-                            <button className='bg-blue-500/30 rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
+                            <button onClick={() => router.push(`/all_message/${item.id}`)} className='bg-blue-500/30 cursor-pointer rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
                                 <LuSquarePen />
                                 <p>Edit</p>
                             </button>

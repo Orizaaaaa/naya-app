@@ -50,10 +50,6 @@ function Page() {
             </div>
         </div> 
     `,
-        description: "",
-        date: parseDate(formatDate(dateNow)),
-        status: "menunggu",
-        user_id: "",
     });
 
     const dataSiswa = {

@@ -38,14 +38,16 @@ export const getAllTemplate = async () => {
 };
 
 
-export const getTemplateById = (id: string, callback: any) => {
-    axiosInterceptor(`/template/${id}`)
-        .then((result) => {
-            callback(result.data)
-        }).catch((err) => {
-            console.log(err);
-        });
-}
+export const getTemplateById = async (id: string) => {
+    try {
+        const result = await axiosInterceptor(`/template/${id}`);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+
 
 export const deleteTemplate = (id: any, callback: any) => {
     axiosInterceptor.delete(`/template/${id}`)
