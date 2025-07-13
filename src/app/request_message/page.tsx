@@ -1,15 +1,36 @@
 'use client';
 
-import { getAllRequestMessage } from '@/api/method';
+import { getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method';
+import ModalDefault from '@/components/fragments/modal/modal';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
-import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
+import { formatDate, formatTanggalToIndo } from '@/utils/helper';
+import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
+import { log } from 'console';
+import { i } from 'framer-motion/client';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const Page = () => {
+    const { onOpen, onClose, isOpen } = useDisclosure();
+    const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
+    const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
+    const [filledTemplate, setFilledTemplate] = useState<string>('');
+    const [isMultiPage, setIsMultiPage] = useState<boolean>(false);
     const [data, setData] = React.useState<any[]>([]);
+    const [templates, setTemplate] = useState<any[]>([])
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 4;
+    const [form, setForm] = useState({
+        _id: "",
+        title: "",
+        type: "",
+        body: "",
+        description: "",
+        date: "",
+        status: "",
+        user_id: ""
+    });
+
 
     // Hitung total halaman berdasarkan data yang sudah diformat
     const pages = Math.ceil((data?.length ?? 0) / rowsPerPage);
@@ -41,52 +62,22 @@ const Page = () => {
         }
     };
 
+
+    const fetchDatTemplate = async () => {
+        try {
+            const res: any = await getAllTemplate();
+            setTemplate(res.data);
+        } catch (error) {
+            console.error('Gagal fetch data:', error);
+        }
+    };
+
     useEffect(() => {
+        fetchDatTemplate();
         fetchData();
     }, []);
 
 
-
-    const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
-    const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
-
-    const [form, setForm] = useState({
-        title: "",
-        type: "",
-        user: {
-            name: "",
-            email: "",
-            id: ""
-        },
-        body: `
-            <div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
-                <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
-                <div style="text-align: center;">
-                    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>PEMERINTAH DAERAH PROVINSI JAWA BARAT</strong></span></h3>
-                    <h3 style="margin: 5px 0;"><span style="font-size: 18px;"><strong>DINAS PENDIDIKAN</strong></span></h3>
-                    <h2 style="margin: 10px 0; font-weight: bold;">
-                    <span style="font-size: 18px;">CABANG DINAS PENDIDIKAN WILAYAH VIII<br>
-                    SMA NEGERI 1 MARGAASIH</span>
-                    </h2>
-                    <p style="margin: 5px 0; font-size: 14px;">
-                    Jalan Terusan Taman Kopo Indah III - Mekarrahayu Telp. 022-54438236 Kec. Margaasih Kab. Bandung 40218<br>
-                    Website:
-                    <a href="http://www.sman1-margaasih.sch.id" style="color: blue;">www.sman1-margaasih.sch.id</a>
-                    Email:
-                    <a href="mailto:sman_1_margaasih@gmail.com" style="color: blue;">sman_1_margaasih@gmail.com</a>
-                    </p>
-                </div>
-            </div> 
-        <p>halo nama saya adalah {name}</p><p>email saya adalah {email}</p>
-        `,
-        description: "",
-        status: "menunggu",
-        user_id: "",
-    });
-
-
-    const [filledTemplate, setFilledTemplate] = useState<string>('');
-    const [isMultiPage, setIsMultiPage] = useState<boolean>(false);
 
     // ========================
     // TEMPLATE FIXED FOOTER
@@ -228,7 +219,6 @@ const Page = () => {
             .save();
     };
 
-    console.log('form', form);
 
     const itemsDropdown = [
         {
@@ -251,16 +241,57 @@ const Page = () => {
 
 
     const dataStatus = [
-        { key: "laki-laki", label: "Laki-laki", value: "Laki-laki" },
-        { key: "perempuan", label: "Perempuan", value: "Perempuan" },
-    ]
+        { key: "Diproses", label: "Diproses", value: "Diproses" },
+        { key: "Menunggu", label: "Menunggu", value: "Menunggu" },
+        { key: "Selesai", label: "Selesai", value: "Selesai" },
+        { key: "Ditolak", label: "Ditolak", value: "Ditolak" },
+    ];
 
-    const onSelectionChange = (key: string) => {
+
+    const onSelectionChange = (body: string) => {
+        console.log('body', body);
         setForm({
             ...form,
-            body: key
+            body: body
         });
     };
+    const onSelectionChangeStatus = (status: string) => {
+        console.log('status', status);
+        setForm({
+            ...form,
+            status: status
+        });
+    };
+
+    const openModalSend = (item: any) => {
+        onOpen();
+        setForm({
+            ...form,
+            _id: item.id,
+            title: item.title,
+            type: item.type,
+            body: item.body,
+            description: item.description,
+            date: item.date,
+            status: item.status,
+            user_id: item.user.id
+
+        });
+    }
+
+    const handleUpdate = async (e: any) => {
+        e.preventDefault();
+        console.log('kunyuk', form);
+        await updateRequestUser(form._id, form).then((result) => {
+            if (result) {
+                fetchData();
+                onClose();
+            }
+        })
+    }
+    console.log("data request", data);
+    console.log("data form", form);
+
 
     return (
         <DefaultLayout>
@@ -290,7 +321,6 @@ const Page = () => {
                     <TableColumn key="type">TIPE SURAT</TableColumn>
                     <TableColumn key="title">JUDUL SURAT</TableColumn>
                     <TableColumn key="formatted_date">TANGGAL</TableColumn>
-                    <TableColumn key="generate">GENERATE</TableColumn>
                     <TableColumn key="status">STATUS</TableColumn>
                     <TableColumn key="action">ACTION</TableColumn>
 
@@ -302,30 +332,69 @@ const Page = () => {
                                 <TableCell>
                                     {columnKey === 'action' ? (
                                         <div className="flex gap-2">
-                                            <button className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
-                                                Edit
+                                            <button onClick={() => openModalSend(item)} className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
+                                                KIRIM SURAT
                                             </button>
                                             <button className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition">
-                                                Delete
+                                                DELETE
+                                            </button>
+                                            <button onClick={() => generateDataDownload(item)} className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition">
+                                                DOWNLOAD
                                             </button>
                                         </div>
-                                    ) : columnKey === 'generate' ?
-                                        (
-                                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)}>
-                                                {dataStatus.map((animal) => (
-                                                    <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
-                                                ))}
-                                            </Autocomplete>
-                                        ) :
+                                    ) :
                                         (
                                             getKeyValue(item, columnKey)
                                         )}
+
                                 </TableCell>
                             )}
                         </TableRow>
                     )}
                 </TableBody>
             </Table>
+
+            <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose} >
+                <form onSubmit={handleUpdate} className='text-white'>
+                    <h1 className='mb-12 ' >KIRIM SURAT</h1>
+                    <div className="space-y-3">
+                        <h2>Meminta Surat Bernama : {form.title}</h2>
+                        <h2>Dengan Tipe Surat : {form.type}</h2>
+                        <h2>Dengan Tanggal : {formatTanggalToIndo(form.date)}</h2>
+                        <h2>Status saat ini : {form.status}</h2>
+                        <div >
+                            <h1 className='mb-2' >Berikan Jenis Surat</h1>
+                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)} value={form.type}>
+                                {templates.map((item) => (
+                                    <AutocompleteItem key={item.body}>{item.name}</AutocompleteItem>
+                                ))}
+                            </Autocomplete>
+                        </div>
+                        <div >
+                            <h1 className='mb-2' >Masukan Status Surat</h1>
+                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChangeStatus(e)} value={form.status} selectedKey={form.status}>
+                                {dataStatus.map((item) => (
+                                    <AutocompleteItem key={item.key}>{item.value}</AutocompleteItem>
+                                ))}
+                            </Autocomplete>
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-2 mt-12">
+                        <button
+                            type='submit'
+                            className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
+                        >
+                            KIRIM
+                        </button>
+                        <button
+                            className="bg-red-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-red-700 transition"
+                            onClick={onClose}
+                        >
+                            BATAL
+                        </button>
+                    </div>
+                </form>
+            </ModalDefault>
 
 
             <div className="p-4 space-y-6 max-w-4xl mx-auto">

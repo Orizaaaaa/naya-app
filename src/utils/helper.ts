@@ -68,3 +68,19 @@ export const getFirstDayOfMonth = (date: Date) => {
 
 const dateNow = new Date();
 export const dateFirst = getFirstDayOfMonth(dateNow);
+
+export function formatTanggalToIndo(dateString: string): string {
+    const date = new Date(dateString);
+
+    const hari = [
+        "Minggu", "Senin", "Selasa", "Rabu",
+        "Kamis", "Jumat", "Sabtu"
+    ];
+
+    const hariNama = hari[date.getDay()];
+    const tanggal = String(date.getDate()).padStart(2, '0');
+    const bulan = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() 0-11
+    const tahun = date.getFullYear();
+
+    return `${hariNama}, ${tanggal}, ${bulan}, ${tahun}`;
+}

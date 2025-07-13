@@ -68,3 +68,14 @@ export const updateTemplate = async (id: any, form: any) => {
         throw err;
     }
 }
+
+
+export const updateRequestUser = async (id: any, form: any) => {
+    try {
+        const result = await axiosInterceptor.put(`/request/${id}`, form);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
