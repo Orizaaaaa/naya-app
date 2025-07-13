@@ -2,7 +2,7 @@
 
 import { getAllRequestMessage } from '@/api/method';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
-import { getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
@@ -298,11 +298,22 @@ const Page = () => {
                                         </div>
                                     ) : columnKey === 'generate' ?
                                         (
-                                            <div className="flex gap-2">
-                                                <button onClick={() => generateDataDownload(item)} className="bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
-                                                    Generate
-                                                </button>
-                                            </div>
+                                            <Dropdown>
+                                                <DropdownTrigger>
+                                                    <button className='bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition' >Pilih Surat</button>
+                                                </DropdownTrigger>
+                                                <DropdownMenu aria-label="Dynamic Actions" items={itemsDropdown}>
+                                                    {(item) => (
+                                                        <DropdownItem
+                                                            key={item.key}
+                                                            className={item.key === "delete" ? "text-danger" : ""}
+                                                            color={item.key === "delete" ? "danger" : "default"}
+                                                        >
+                                                            {item.label}
+                                                        </DropdownItem>
+                                                    )}
+                                                </DropdownMenu>
+                                            </Dropdown>
                                         ) :
                                         (
                                             getKeyValue(item, columnKey)
