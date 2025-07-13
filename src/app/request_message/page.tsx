@@ -2,7 +2,7 @@
 
 import { getAllRequestMessage } from '@/api/method';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
@@ -169,6 +169,7 @@ const Page = () => {
             .save();
     };
 
+    // yang ini yang untuk download asli
     const generateDataDownload = async (item: any) => {
         const updatedUser = {
             name: item.user?.name || '',
@@ -249,6 +250,18 @@ const Page = () => {
     ];
 
 
+    const dataStatus = [
+        { key: "laki-laki", label: "Laki-laki", value: "Laki-laki" },
+        { key: "perempuan", label: "Perempuan", value: "Perempuan" },
+    ]
+
+    const onSelectionChange = (key: string) => {
+        setForm({
+            ...form,
+            body: key
+        });
+    };
+
     return (
         <DefaultLayout>
             <h1 className="mt-2 text-white text-2xl mb-3">Permintaan surat siswa</h1>
@@ -298,22 +311,11 @@ const Page = () => {
                                         </div>
                                     ) : columnKey === 'generate' ?
                                         (
-                                            <Dropdown>
-                                                <DropdownTrigger>
-                                                    <button className='bg-blue-800 text-white cursor-pointer px-3 py-1 rounded text-sm hover:bg-blue-700 transition' >Pilih Surat</button>
-                                                </DropdownTrigger>
-                                                <DropdownMenu aria-label="Dynamic Actions" items={itemsDropdown}>
-                                                    {(item) => (
-                                                        <DropdownItem
-                                                            key={item.key}
-                                                            className={item.key === "delete" ? "text-danger" : ""}
-                                                            color={item.key === "delete" ? "danger" : "default"}
-                                                        >
-                                                            {item.label}
-                                                        </DropdownItem>
-                                                    )}
-                                                </DropdownMenu>
-                                            </Dropdown>
+                                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)}>
+                                                {dataStatus.map((animal) => (
+                                                    <AutocompleteItem key={animal.key}>{animal.label}</AutocompleteItem>
+                                                ))}
+                                            </Autocomplete>
                                         ) :
                                         (
                                             getKeyValue(item, columnKey)

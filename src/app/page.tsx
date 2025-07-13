@@ -85,10 +85,10 @@ const Login = () => {
         const roleCookies = `role=${res.data.role}`;
         document.cookie = tokenCookies; // Set cookie
         document.cookie = roleCookies; // Set cookie
-        localStorage.setItem('name', res.data.name);
+        localStorage.setItem('name', res.data.user.name);
         localStorage.setItem('id', res.data.id);
         localStorage.setItem('image', res.data.image);
-        localStorage.setItem('role', res.data.role);
+        localStorage.setItem('role', res.data.user.role);
         localStorage.setItem('token', res.data.token);
         setLoading(false);
 
