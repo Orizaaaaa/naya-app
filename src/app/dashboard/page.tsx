@@ -21,12 +21,15 @@ import { FaSquarePen } from 'react-icons/fa6'
 import CardBar from '@/components/fragments/cardBox/CardBar'
 import { IoSearch } from 'react-icons/io5'
 import ModalDefault from '@/components/fragments/modal/modal'
-import { getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method'
+import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method'
 import { formatTanggalToIndo } from '@/utils/helper'
+import ModalAlert from '@/components/fragments/modal/modalAlert'
 
 type Props = {}
 
 const page = (props: Props) => {
+    const [id, setId] = React.useState('');
+    const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
@@ -125,136 +128,6 @@ const page = (props: Props) => {
         }
     }, [filledTemplate]);
 
-    // ========================
-    // FUNCTION: GENERATE TEMPLATE
-    // ========================
-    const generateFromTemplate = useCallback(
-        (templateString: string, data: Record<string, string>) => {
-            let result = templateString;
-            Object.entries(data).forEach(([key, value]) => {
-                result = result.replace(new RegExp(`{${key}}`, 'g'), value);
-            });
-            return result;
-        },
-        []
-    );
-
-
-    // ========================
-    // FUNCTION: DOWNLOAD PDF
-    // ========================
-    const handleDownloadPDF = async () => {
-        if (!printRef.current) {
-            console.error("Print reference is not available.");
-            return;
-        }
-
-        const html2pdf = (await import('html2pdf.js')).default;
-        const previewWidth = printRef.current.offsetWidth;
-
-        html2pdf()
-            .set({
-                margin: [3, 3, 3, 3],
-                filename: 'surat-multi-halaman.pdf',
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    width: previewWidth,
-                    windowWidth: previewWidth,
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait',
-                    x: 3,
-                    y: 3,
-                },
-                width: 170,
-            })
-            .from(printRef.current)
-            .save();
-    };
-
-    // yang ini yang untuk download asli
-    const generateDataDownload = async (item: any) => {
-        const updatedUser = {
-            name: item.user?.name || '',
-            email: item.user?.email || '',
-            id: item.user?._id || '',
-        };
-
-        // 1. Update state form dengan data user
-        const updatedForm = {
-            ...form,
-            user: updatedUser,
-        };
-        setForm(updatedForm);
-
-        // 2. Generate isi HTML
-        const fullHtmlTemplate = `
-            <div style="position: relative; min-height: 297mm;">
-                ${form.body}
-                ${fixedFooterTemplate}
-            </div>
-        `;
-
-        const result = generateFromTemplate(fullHtmlTemplate, updatedUser);
-        setFilledTemplate(result);
-
-        // 4. Lanjut download PDF
-        if (!printRef.current) {
-            console.error("Print reference is not available.");
-            return;
-        }
-
-        const html2pdf = (await import('html2pdf.js')).default;
-        const previewWidth = printRef.current.offsetWidth;
-
-        html2pdf()
-            .set({
-                margin: [3, 3, 3, 3],
-                filename: 'surat-multi-halaman.pdf',
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    width: previewWidth,
-                    windowWidth: previewWidth,
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait',
-                    x: 3,
-                    y: 3,
-                },
-                width: 170,
-            })
-            .from(printRef.current)
-            .save();
-    };
-
-
-    const itemsDropdown = [
-        {
-            key: "new",
-            label: "New file",
-        },
-        {
-            key: "copy",
-            label: "Copy link",
-        },
-        {
-            key: "edit",
-            label: "Edit file",
-        },
-        {
-            key: "delete",
-            label: "Delete file",
-        },
-    ];
-
 
     const dataStatus = [
         { key: "Diproses", label: "Diproses", value: "Diproses" },
@@ -295,6 +168,11 @@ const page = (props: Props) => {
         });
     }
 
+    const openModalDelete = (item: any) => {
+        setId(item.id);
+        onWarningOpen();
+    }
+
     const handleUpdate = async (e: any) => {
         e.preventDefault();
         console.log('kunyuk', form);
@@ -302,6 +180,15 @@ const page = (props: Props) => {
             if (result) {
                 fetchData();
                 onClose();
+            }
+        })
+    }
+
+    const handleDelete = async () => {
+        deleteRequest(id).then((result) => {
+            if (result) {
+                fetchData();
+                onWarningClose();
             }
         })
     }
@@ -366,7 +253,8 @@ const page = (props: Props) => {
                                                 <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
                                                     KIRIM SURAT
                                                 </button>
-                                                <button className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
+                                                <button className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  "
+                                                    onClick={() => openModalDelete(item)}>
                                                     DELETE
                                                 </button>
                                             </div>
@@ -425,6 +313,14 @@ const page = (props: Props) => {
                     </div>
                 </form>
             </ModalDefault>
+
+            <ModalAlert isOpen={isWarningOpen} onClose={onWarningClose} >
+                apakah anda yakin akan menghapus surat ini ?
+                <div className="flex justify-end gap-3">
+                    <button className='bg-red-900  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={onWarningClose}>Tidak</button>
+                    <button className='bg-blue-500  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={handleDelete} >Ya</button>
+                </div>
+            </ModalAlert>
 
 
             <div className="p-4 space-y-6 max-w-4xl mx-auto">

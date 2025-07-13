@@ -79,3 +79,14 @@ export const updateRequestUser = async (id: any, form: any) => {
         throw err;
     }
 }
+
+
+export const deleteRequest = async (id: any) => {
+    try {
+        const result = await axiosInterceptor.delete(`/request/${id}`)
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
