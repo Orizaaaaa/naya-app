@@ -49,13 +49,14 @@ export const getTemplateById = async (id: string) => {
 };
 
 
-export const deleteTemplate = (id: any, callback: any) => {
-    axiosInterceptor.delete(`/template/${id}`)
-        .then((result) => {
-            callback(result.data)
-        }).catch((err) => {
-            console.log(err);
-        });
+export const deleteTemplate = async (id: any) => {
+    try {
+        const result = await axiosInterceptor.delete(`/template/${id}`)
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }
 
 export const updateTemplate = async (id: any, form: any) => {

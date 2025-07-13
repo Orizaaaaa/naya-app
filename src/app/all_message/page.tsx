@@ -1,5 +1,5 @@
 'use client'
-import { getAllTemplate } from '@/api/method'
+import { deleteTemplate, getAllTemplate } from '@/api/method'
 import SpotlightCard from '@/components/fragments/cardBox/CardSpot'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import DefaultLayout from '@/components/layouts/DefaultLayout'
@@ -11,9 +11,11 @@ import { LuSquarePen } from 'react-icons/lu'
 type Props = {}
 
 const page = (props: Props) => {
+    const [id, setId] = React.useState('');
     const router = useRouter();
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
-    const openModalDelete = () => {
+    const openModalDelete = (value: any) => {
+        setId(value)
         onWarningOpen()
     }
     const [data, setData] = React.useState([]);
@@ -33,7 +35,14 @@ const page = (props: Props) => {
 
     console.log(data);
 
-
+    const handleDeleteTemplate = async () => {
+        deleteTemplate(id).then((result) => {
+            if (result) {
+                fetchData();
+                onWarningClose();
+            }
+        })
+    }
     return (
         <DefaultLayout>
             <div className="grid grid-cols-4 gap-4">
@@ -46,7 +55,7 @@ const page = (props: Props) => {
                                 <LuSquarePen />
                                 <p>Edit</p>
                             </button>
-                            <button className='bg-red-900  rounded-lg p-1 cursor-pointer' onClick={openModalDelete}>Hapus</button>
+                            <button className='bg-red-900  rounded-lg p-1 cursor-pointer' onClick={() => openModalDelete(item.id)}>Hapus</button>
                         </div>
                     </SpotlightCard>
                 ))}
@@ -54,6 +63,10 @@ const page = (props: Props) => {
 
             <ModalAlert isOpen={isWarningOpen} onClose={onWarningClose} >
                 apakah anda yakin akan menghapus surat ini ?
+                <div className="flex justify-end gap-3">
+                    <button className='bg-red-900  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={onWarningClose}>Tidak</button>
+                    <button className='bg-blue-500  rounded-lg p-1 cursor-pointer py-2 px-3 text-white' onClick={handleDeleteTemplate} >Ya</button>
+                </div>
             </ModalAlert>
         </DefaultLayout>
     )
