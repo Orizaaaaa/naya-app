@@ -10,6 +10,7 @@ import { log } from 'console';
 import { i } from 'framer-motion/client';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const Page = () => {
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
@@ -141,27 +142,49 @@ const Page = () => {
 
     const handleUpdate = async (e: any) => {
         e.preventDefault();
-        await updateRequestUser(form._id, form).then((result) => {
+        const toastId = toast.loading('Menyimpan perubahan...');
+
+        try {
+            const result = await updateRequestUser(form._id, form);
+
             if (result) {
+                toast.success('Data berhasil diperbarui!', { id: toastId });
                 console.log('data yang terkirim ke db', result);
                 fetchData();
                 onClose();
+            } else {
+                toast.error('Gagal memperbarui data.', { id: toastId });
             }
-        })
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error('Terjadi kesalahan saat memperbarui.', { id: toastId });
+        }
+    };
+
 
     const openModalDelete = (item: any) => {
         setId(item.id);
         onWarningOpen();
     }
     const handleDelete = async () => {
-        deleteRequest(id).then((result) => {
+        const toastId = toast.loading('Menghapus surat...');
+
+        try {
+            const result = await deleteRequest(id);
+
             if (result) {
+                toast.success('Surat berhasil dihapus!', { id: toastId });
                 fetchData();
                 onWarningClose();
+            } else {
+                toast.error('Gagal menghapus surat.', { id: toastId });
             }
-        })
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error('Terjadi kesalahan saat menghapus.', { id: toastId });
+        }
+    };
+
 
 
     return (
