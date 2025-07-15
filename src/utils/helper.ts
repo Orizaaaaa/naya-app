@@ -86,6 +86,19 @@ export function formatTanggalToIndo(dateString: string): string {
 }
 
 
+export function formatTanggalIndoSecond(dateString: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    };
+
+    // Format dengan locale Indonesia
+    return date.toLocaleDateString('id-ID', options);
+}
+
+
 export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
     if (!text) return '';
 

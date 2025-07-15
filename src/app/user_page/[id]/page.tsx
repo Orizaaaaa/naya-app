@@ -1,5 +1,6 @@
 'use client'
 import { getMessageUser } from '@/api/method'
+import { formatTanggalIndoSecond, formatTanggalToIndo } from '@/utils/helper'
 import { Spinner } from '@heroui/react'
 import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -30,6 +31,7 @@ const page = (props: Props) => {
             image: "",
             nis: "",
             nisn: "",
+            date: '',
             place_of_birth: "",
         },
     });
@@ -38,11 +40,23 @@ const page = (props: Props) => {
     const fetchDataMessage = async (id: string) => {
         try {
             const res: any = await getMessageUser(id);
-            setForm(res.data);
+
+            // Pindahkan tanggal utama ke dalam user.date juga
+            const updatedData = {
+                ...res.data,
+                user: {
+                    ...res.data.user,
+                    date: formatTanggalIndoSecond(res.data.date),
+                    birthdate: formatTanggalIndoSecond(res.data.user.birthdate),
+                },
+            };
+
+            setForm(updatedData);
         } catch (error) {
             console.error('Gagal fetch data:', error);
         }
     };
+
 
     useEffect(() => {
         fetchDataMessage(id);
@@ -53,7 +67,7 @@ const page = (props: Props) => {
     // ========================
     const fixedFooterTemplate = `
             <div style="margin-top: 50px; text-align: right;">
-              <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {tanggal}</p>
+              <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {date}</p>
               <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
               <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
               <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd</p>
