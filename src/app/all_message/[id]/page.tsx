@@ -6,6 +6,7 @@ import { Spinner } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 type Props = {}
 
@@ -177,13 +178,22 @@ function page({ }: Props) {
 
     const router = useRouter();
     const handleUpdate = async () => {
-        console.log('kunyuk', form);
-        updateTemplate(id, form).then((result) => {
+        const toastId = toast.loading('Menyimpan perubahan...');
+
+        try {
+            const result = await updateTemplate(id, form);
             if (result) {
+                toast.success('Template berhasil diperbarui!', { id: toastId });
                 router.push('/all_message');
+            } else {
+                toast.error('Gagal memperbarui template.', { id: toastId });
             }
-        })
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error('Terjadi kesalahan saat menyimpan.', { id: toastId });
+        }
+    };
+
 
     console.log('kunyuk', data);
     console.log('kunyuk2', form);
@@ -195,6 +205,8 @@ function page({ }: Props) {
                     <>
                         <div className="grid grid-cols-2 gap-3 w-full ">
                             <InputForm
+                                styleTitle='text-white mb-2'
+                                title='Nama Surat'
                                 className="bg-white "
                                 placeholder="Masukkan Nama Surat"
                                 type="name"
@@ -203,6 +215,8 @@ function page({ }: Props) {
                                 onChange={handleChange}
                             />
                             <InputForm
+                                styleTitle='text-white mb-2'
+                                title='Tipe Surat'
                                 className="bg-white "
                                 placeholder="Masukkan Tipe"
                                 type="text"
