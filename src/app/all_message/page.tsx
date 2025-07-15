@@ -6,6 +6,7 @@ import DefaultLayout from '@/components/layouts/DefaultLayout'
 import { useDisclosure } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
+import toast from 'react-hot-toast'
 import { LuSquarePen } from 'react-icons/lu'
 
 type Props = {}
@@ -36,13 +37,24 @@ const page = (props: Props) => {
     console.log(data);
 
     const handleDeleteTemplate = async () => {
-        deleteTemplate(id).then((result) => {
+        const toastId = toast.loading('Menghapus template...');
+
+        try {
+            const result = await deleteTemplate(id);
+
             if (result) {
+                toast.success('Template berhasil dihapus!', { id: toastId });
                 fetchData();
                 onWarningClose();
+            } else {
+                toast.error('Gagal menghapus template.', { id: toastId });
             }
-        })
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error('Terjadi kesalahan saat menghapus.', { id: toastId });
+        }
+    };
+
     return (
         <DefaultLayout>
             <h1 className="mt-2 text-white text-2xl mb-3">SEMUA TEMPLATE SURAT </h1>
