@@ -81,20 +81,6 @@ const Page = () => {
     }, []);
 
 
-
-    // ========================
-    // TEMPLATE FIXED FOOTER
-    // ========================
-    const fixedFooterTemplate = `
-        <div style="margin-top: 50px; text-align: right;">
-          <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {tanggal}</p>
-          <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
-          <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
-          <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd</p>
-          <p style="margin-bottom: 0; line-height: 1.5;">NIP. 197007202005011008</p>
-        </div>
-      `;
-
     // ========================
     // EFFECT: CEK MULTI HALAMAN
     // ========================
@@ -155,9 +141,9 @@ const Page = () => {
 
     const handleUpdate = async (e: any) => {
         e.preventDefault();
-        console.log('kunyuk', form);
         await updateRequestUser(form._id, form).then((result) => {
             if (result) {
+                console.log('data yang terkirim ke db', result);
                 fetchData();
                 onClose();
             }
@@ -176,8 +162,6 @@ const Page = () => {
             }
         })
     }
-    console.log("data request", data);
-    console.log("data form", form);
 
 
     return (
