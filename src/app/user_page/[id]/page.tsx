@@ -1,13 +1,14 @@
 'use client'
 import { getMessageUser } from '@/api/method'
 import { Spinner } from '@heroui/react'
+import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { MdDownloading } from 'react-icons/md'
 
 type Props = {}
 
 const page = (props: Props) => {
-    const id = '68713d761f1a92d8a4285489'
+    const { id }: any = useParams()
 
     const [loading, setLoading] = useState(false);
     const [form, setForm]: any = useState({

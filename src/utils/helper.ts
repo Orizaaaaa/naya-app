@@ -84,3 +84,14 @@ export function formatTanggalToIndo(dateString: string): string {
 
     return `${hariNama}, ${tanggal}, ${bulan}, ${tahun}`;
 }
+
+
+export function truncateText(text: string, maxLength: number, suffix: string = '...'): string {
+    if (!text) return '';
+
+    if (text.length > maxLength) {
+        return text.slice(0, maxLength) + suffix;
+    }
+
+    return text;
+}
