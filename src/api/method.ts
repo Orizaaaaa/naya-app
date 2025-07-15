@@ -100,3 +100,13 @@ export const getMessageUser = async (id: string) => {
         throw err;
     }
 };
+
+
+export const createRequestMessage = async (form: any, callback: any) => {
+    await axiosInterceptor.post('/template', form)
+        .then((result) => {
+            callback(result.data)
+        }).catch((err) => {
+            console.log(err);
+        });
+}
