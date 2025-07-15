@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { HeroUIProvider } from "@heroui/react";
+import { Toaster } from "react-hot-toast";
 
 
 
@@ -30,6 +31,8 @@ export default function RootLayout({
       >
         <HeroUIProvider >
           {children}
+          <Toaster position="top-center"
+            reverseOrder={false} />
         </HeroUIProvider>
       </body>
     </html>

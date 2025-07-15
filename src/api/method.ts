@@ -103,7 +103,7 @@ export const getMessageUser = async (id: string) => {
 
 
 export const createRequestMessage = async (form: any, callback: any) => {
-    await axiosInterceptor.post('/template', form)
+    await axiosInterceptor.post('/request', form)
         .then((result) => {
             callback(result.data)
         }).catch((err) => {

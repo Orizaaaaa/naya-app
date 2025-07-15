@@ -1,14 +1,15 @@
 'use client'
-import { getAllTemplate, getMessageUser } from '@/api/method';
+import { createRequestMessage, getAllTemplate, getMessageUser } from '@/api/method';
 import InputForm from '@/components/elements/input/InputForm';
 import SpotlightCard from '@/components/fragments/cardBox/CardSpot';
 import ModalDefault from '@/components/fragments/modal/modal';
-import { formatDate } from '@/utils/helper';
+import { formatDate, formatDateStr } from '@/utils/helper';
 import { DatePicker, useDisclosure } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { useRouter } from 'next/navigation';
 
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import { LuSquarePen } from 'react-icons/lu';
 
@@ -22,13 +23,14 @@ function page({ }: Props) {
     const [data, setData] = useState([]);
 
     const [form, setForm] = useState({
+        user_id: "",
         title: "",
         type: "",
-        body: "",
+        body: `default`,
         description: "",
         date: parseDate(formatDate(dateNow)),
         status: "menunggu",
-        user_id: "",
+
     });
 
 
@@ -46,15 +48,51 @@ function page({ }: Props) {
         fetchData();
     }, []);
 
-    const opanModalRequest = (id: string) => {
+    const opanModalRequest = (item: any) => {
+        const userId = localStorage.getItem('id') || ""; // Ambil dari localStorage, fallback ke empty string jika null
+        setForm({
+            ...form,
+            title: item.name,
+            type: item.type,
+            user_id: userId
+        });
         onOpen();
-        console.log(id);
-    }
-
-    const handleCreateMessage = () => {
+    };
 
 
-    }
+    const handleCreateMessage = async (e: any) => {
+        e.preventDefault();
+        const toastId = toast.loading('Mengirim permintaan surat...');
+
+        setLoading(true);
+        try {
+            const data = {
+                ...form,
+                date: formatDateStr(form.date), // pastikan penamaan tepat
+            };
+            await createRequestMessage(data, (result: any) => {
+                if (result) {
+                    toast.success('Permintaan berhasil dikirim!', { id: toastId });
+                    onClose();
+                    setForm({
+                        user_id: "",
+                        title: "",
+                        type: "",
+                        body: "",
+                        description: "",
+                        date: parseDate(formatDate(dateNow)),
+                        status: "menunggu",
+
+                    });
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            toast.error('Gagal mengirim permintaan surat.', { id: toastId });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -73,7 +111,7 @@ function page({ }: Props) {
                             <h1>{item.name}</h1>
                             <h2>{item.type}</h2>
                             <div className="flex justify-end mt-5">
-                                <button onClick={() => opanModalRequest(item.id)} className='bg-blue-500/30 cursor-pointer rounded-lg py-2 px-3 flex flex-row justify-center items-center gap-2'>
+                                <button onClick={() => opanModalRequest(item)} className='bg-blue-500/30 cursor-pointer rounded-lg py-2 px-3 flex flex-row justify-center items-center gap-2'>
                                     <IoNewspaperOutline size={20} />
                                     <p>Minta Surat</p>
                                 </button>
