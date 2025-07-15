@@ -112,135 +112,6 @@ const Page = () => {
         }
     }, [filledTemplate]);
 
-    // ========================
-    // FUNCTION: GENERATE TEMPLATE
-    // ========================
-    const generateFromTemplate = useCallback(
-        (templateString: string, data: Record<string, string>) => {
-            let result = templateString;
-            Object.entries(data).forEach(([key, value]) => {
-                result = result.replace(new RegExp(`{${key}}`, 'g'), value);
-            });
-            return result;
-        },
-        []
-    );
-
-
-    // ========================
-    // FUNCTION: DOWNLOAD PDF
-    // ========================
-    const handleDownloadPDF = async () => {
-        if (!printRef.current) {
-            console.error("Print reference is not available.");
-            return;
-        }
-
-        const html2pdf = (await import('html2pdf.js')).default;
-        const previewWidth = printRef.current.offsetWidth;
-
-        html2pdf()
-            .set({
-                margin: [3, 3, 3, 3],
-                filename: 'surat-multi-halaman.pdf',
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    width: previewWidth,
-                    windowWidth: previewWidth,
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait',
-                    x: 3,
-                    y: 3,
-                },
-                width: 170,
-            })
-            .from(printRef.current)
-            .save();
-    };
-
-    // yang ini yang untuk download asli
-    const generateDataDownload = async (item: any) => {
-        const updatedUser = {
-            name: item.user?.name || '',
-            email: item.user?.email || '',
-            id: item.user?._id || '',
-        };
-
-        // 1. Update state form dengan data user
-        const updatedForm = {
-            ...form,
-            user: updatedUser,
-        };
-        setForm(updatedForm);
-
-        // 2. Generate isi HTML
-        const fullHtmlTemplate = `
-        <div style="position: relative; min-height: 297mm;">
-            ${form.body}
-            ${fixedFooterTemplate}
-        </div>
-    `;
-
-        const result = generateFromTemplate(fullHtmlTemplate, updatedUser);
-        setFilledTemplate(result);
-
-        // 4. Lanjut download PDF
-        if (!printRef.current) {
-            console.error("Print reference is not available.");
-            return;
-        }
-
-        const html2pdf = (await import('html2pdf.js')).default;
-        const previewWidth = printRef.current.offsetWidth;
-
-        html2pdf()
-            .set({
-                margin: [3, 3, 3, 3],
-                filename: 'surat-multi-halaman.pdf',
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    width: previewWidth,
-                    windowWidth: previewWidth,
-                },
-                jsPDF: {
-                    unit: 'mm',
-                    format: 'a4',
-                    orientation: 'portrait',
-                    x: 3,
-                    y: 3,
-                },
-                width: 170,
-            })
-            .from(printRef.current)
-            .save();
-    };
-
-
-    const itemsDropdown = [
-        {
-            key: "new",
-            label: "New file",
-        },
-        {
-            key: "copy",
-            label: "Copy link",
-        },
-        {
-            key: "edit",
-            label: "Edit file",
-        },
-        {
-            key: "delete",
-            label: "Delete file",
-        },
-    ];
 
 
     const dataStatus = [
@@ -349,7 +220,7 @@ const Page = () => {
                                     {columnKey === 'action' ? (
                                         <div className="flex gap-2">
                                             <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
-                                                KIRIM SURAT
+                                                MANAGE
                                             </button>
                                             <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
                                                 DELETE
@@ -367,47 +238,86 @@ const Page = () => {
                 </TableBody>
             </Table>
 
-            <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose} >
-                <form onSubmit={handleUpdate} className='text-white'>
-                    <h1 className='mb-12 ' >KIRIM SURAT</h1>
-                    <div className="space-y-3">
-                        <h2>Meminta Surat Bernama : {form.title}</h2>
-                        <h2>Dengan Tipe Surat : {form.type}</h2>
-                        <h2>Dengan Tanggal : {formatTanggalToIndo(form.date)}</h2>
-                        <h2>Status saat ini : {form.status}</h2>
-                        <div >
-                            <h1 className='mb-2' >Berikan Jenis Surat</h1>
-                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)} value={form.type}>
+            <ModalDefault className="bg-secondBlack p-6 rounded-xl shadow-xl" isOpen={isOpen} onClose={onClose}>
+                <form onSubmit={handleUpdate} className="text-white space-y-6">
+                    <h1 className="text-2xl font-bold text-center border-b border-white/10 pb-4">
+                        📩 Permintaan Surat
+                    </h1>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Nama Surat</p>
+                            <p className="text-lg font-semibold">{form.title}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Tipe Surat</p>
+                            <p className="text-lg font-semibold">{form.type}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Tanggal Dibutuhkan</p>
+                            <p className="text-lg font-semibold">{formatTanggalToIndo(form.date)}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Status Saat Ini</p>
+                            <p className="text-lg font-semibold">{form.status}</p>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm text-white/60">Deskripsi Siswa</p>
+                            <p className="text-base">{form.description}</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Jenis Surat</label>
+                            <Autocomplete
+                                className="max-w-xs"
+                                onSelectionChange={(e: any) => onSelectionChange(e)}
+                                value={form.type}
+                            >
                                 {templates.map((item) => (
                                     <AutocompleteItem key={item.body}>{item.name}</AutocompleteItem>
                                 ))}
                             </Autocomplete>
                         </div>
-                        <div >
-                            <h1 className='mb-2' >Masukan Status Surat</h1>
-                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChangeStatus(e)} value={form.status} selectedKey={form.status}>
+
+                        <div>
+                            <label className="block text-sm mb-2 text-white/70">📌 Ubah Status Surat</label>
+                            <Autocomplete
+                                className="max-w-xs"
+                                onSelectionChange={(e: any) => onSelectionChangeStatus(e)}
+                                value={form.status}
+                                selectedKey={form.status}
+                            >
                                 {dataStatus.map((item) => (
                                     <AutocompleteItem key={item.key}>{item.value}</AutocompleteItem>
                                 ))}
                             </Autocomplete>
                         </div>
                     </div>
-                    <div className="flex justify-end gap-2 mt-12">
+
+                    <div className="flex justify-end gap-3 mt-10">
                         <button
-                            type='submit'
-                            className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
+                            type="submit"
+                            className="bg-blue-700 hover:bg-blue-800 transition px-4 py-2 rounded-lg text-white text-sm shadow"
                         >
-                            KIRIM
+                            ✅ KIRIM
                         </button>
                         <button
-                            className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
+                            type="button"
                             onClick={onClose}
+                            className="bg-red-700 hover:bg-red-800 transition px-4 py-2 rounded-lg text-white text-sm shadow"
                         >
-                            BATAL
+                            ❌ BATAL
                         </button>
                     </div>
                 </form>
             </ModalDefault>
+
 
             <ModalAlert isOpen={isWarningOpen} onClose={onWarningClose} >
                 apakah anda yakin akan menghapus surat ini ?
