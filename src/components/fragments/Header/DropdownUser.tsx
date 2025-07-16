@@ -46,11 +46,8 @@ const DropdownUser = () => {
 
   return (
     <div className="relative">
-      <Link
-        ref={trigger}
-        onClick={() => setDropdownOpen(!dropdownOpen)}
+      <div
         className="flex items-center gap-4"
-        href="#"
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-white ">
@@ -66,14 +63,14 @@ const DropdownUser = () => {
           <img
             className="w-full h-full object-cover rounded-full"
             // nanti profile di sini
-            src='https://ichef.bbci.co.uk/ace/standard/934/cpsprodpb/fee9/live/5553ba50-46b9-11f0-8953-7352f91166a4.jpg'
+            src='https://cdn-icons-png.freepik.com/256/4395/4395949.png'
             alt="admin-profile"
           />
         </div>
-      </Link>
+      </div>
 
       {/* <!-- Dropdown Start --> */}
-      <div
+      {/* <div
         ref={dropdown}
         onFocus={() => setDropdownOpen(true)}
         onBlur={() => setDropdownOpen(false)}
@@ -173,7 +170,7 @@ const DropdownUser = () => {
           </svg>
           Log Out
         </button>
-      </div>
+      </div> */}
       {/* <!-- Dropdown End --> */}
     </div>
   );
