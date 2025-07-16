@@ -33,7 +33,8 @@ const Page = () => {
         description: "",
         date: "",
         status: "",
-        user_id: ""
+        user_id: "",
+        email: "",
     });
 
 
@@ -136,8 +137,8 @@ const Page = () => {
             description: item.description,
             date: item.date,
             status: item.status,
-            user_id: item.user.id
-
+            user_id: item.user.id,
+            email: item.user.email
         });
     }
 
@@ -199,6 +200,7 @@ const Page = () => {
         }
     };
 
+    console.log(form);
 
 
     return (
