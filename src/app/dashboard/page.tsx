@@ -31,6 +31,8 @@ type Props = {}
 
 const page = (props: Props) => {
     const [id, setId] = React.useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
@@ -54,14 +56,21 @@ const page = (props: Props) => {
     });
 
 
-    // Hitung total halaman berdasarkan data yang sudah diformat
-    const pages = Math.ceil((data?.length ?? 0) / rowsPerPage);
+    const filteredData = React.useMemo(() => {
+        return data.filter((item) =>
+            item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [data, searchTerm]);
+
+    const pages = Math.ceil(filteredData.length / rowsPerPage);
 
     const items = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage
-        const end = start + rowsPerPage
-        return data?.slice(start, end)
-    }, [page, data])
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        return filteredData.slice(start, end);
+    }, [filteredData, page]);
+
+
 
 
     const fetchData = async () => {
@@ -249,6 +258,8 @@ const page = (props: Props) => {
     console.log("data form", form);
 
 
+
+
     return (
         <DefaultLayout>
 
@@ -265,7 +276,14 @@ const page = (props: Props) => {
                 <h1 className='mt-16 text-white text-2xl mb-3 ' >PERMINTAAN SURAT SISWA</h1>
                 <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom" >
                     <IoSearch color="#2c80fd" size={20} />
-                    <input placeholder="SEARCH" className=" border-none w-full text-white placeholder-gray-500 outline-none focus:ring-0" type="text" />
+                    <input
+                        placeholder="SEARCH"
+                        className=" border-none w-full text-white placeholder-gray-500 outline-none focus:ring-0 bg-transparent"
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+
                 </div>
                 <Table
                     aria-label="Daftar Permintaan Surat"
