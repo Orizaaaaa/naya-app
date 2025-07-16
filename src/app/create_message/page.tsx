@@ -9,6 +9,7 @@ import { parseDate } from '@internationalized/date';
 import { formatDate } from '@/utils/helper';
 import { createMessageTemplate } from '@/api/method';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
@@ -202,16 +203,29 @@ function Page() {
 
     const router = useRouter();
     const handleCreate = async () => {
+        // Validasi semua field wajib diisi
+        if (!form.name || !form.type || !form.body.trim()) {
+            toast.error("Semua data wajib diisi!");
+            return;
+        }
+
+        const toastId = toast.loading("Membuat template surat...");
+
         try {
             await createMessageTemplate(form, (result: any) => {
                 if (result) {
-                    router.push('/all_message');
+                    toast.success("Template berhasil dibuat!", { id: toastId });
+                    router.push("/all_message");
+                } else {
+                    toast.error("Gagal membuat template.", { id: toastId });
                 }
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            toast.error("Terjadi kesalahan server.", { id: toastId });
         }
-    }
+    };
+
 
     return (
         <DefaultLayout>
