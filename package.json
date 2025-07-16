@@ -16,6 +16,7 @@
     "html2pdf.js": "^0.10.3",
     "jodit-react": "^5.2.19",
     "next": "15.3.5",
+    "nodemailer": "^7.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",

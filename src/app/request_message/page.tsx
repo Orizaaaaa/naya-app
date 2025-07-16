@@ -6,6 +6,7 @@ import ModalAlert from '@/components/fragments/modal/modalAlert';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
 import { formatDate, formatTanggalToIndo } from '@/utils/helper';
 import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
+import axios from 'axios';
 import { log } from 'console';
 import { i } from 'framer-motion/client';
 import dynamic from 'next/dynamic';
@@ -140,7 +141,7 @@ const Page = () => {
         });
     }
 
-    const handleUpdate = async (e: any) => {
+    const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const toastId = toast.loading('Menyimpan perubahan...');
 
@@ -150,13 +151,26 @@ const Page = () => {
             if (result) {
                 toast.success('Data berhasil diperbarui!', { id: toastId });
                 console.log('data yang terkirim ke db', result);
+                // ✅ Selalu kirim email setelah submit
+                try {
+                    await axios.post('/api/send-email', {
+                        to: 'oryzasativacikal@gmail.com', // atau form.email jika dinamis
+                        subject: 'Permohonan Anda Telah Diperbarui',
+                        text: `Halo ${form.title},\n\nPermohonan Anda telah berhasil diproses.\n\nTerima kasih.`,
+                    });
+                    toast.success('Email notifikasi telah dikirim.');
+                } catch (emailError: any) {
+                    console.error('Gagal mengirim email:', emailError.response?.data || emailError);
+                    toast.error('Data berhasil diperbarui, tapi gagal kirim email.');
+                }
+
                 fetchData();
                 onClose();
             } else {
                 toast.error('Gagal memperbarui data.', { id: toastId });
             }
         } catch (error) {
-            console.error(error);
+            console.error('Update error:', error);
             toast.error('Terjadi kesalahan saat memperbarui.', { id: toastId });
         }
     };
