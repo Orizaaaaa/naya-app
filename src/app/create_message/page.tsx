@@ -4,12 +4,14 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
 import InputForm from '@/components/elements/input/InputForm';
-import { Autocomplete, AutocompleteItem, DatePicker } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, DatePicker, useDisclosure } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { formatDate } from '@/utils/helper';
 import { createMessageTemplate } from '@/api/method';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { BsFillInfoCircleFill } from 'react-icons/bs';
+import ModalDefault from '@/components/fragments/modal/modal';
 
 
 // Asumsi DefaultLayout adalah komponen layout dasar Anda.
@@ -20,9 +22,7 @@ import toast from 'react-hot-toast';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
 function Page() {
-    // ========================
-    // STATE & REFS
-    // ========================
+    const { onOpen, onClose, isOpen } = useDisclosure();
     const dateNow = new Date();
     const editor = useRef(null);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
@@ -231,6 +231,10 @@ function Page() {
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold text-white mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
+                <button onClick={onOpen} className='cursor-pointer text-white bg-blue-500/30 py-2 px-3 rounded-lg flex items-center gap-2' >
+                    Panduan pembuatan
+                    <BsFillInfoCircleFill />
+                </button>
                 <div className="grid grid-cols-2 gap-3 w-full ">
                     <InputForm
                         className="bg-white "
@@ -343,6 +347,44 @@ function Page() {
                     </div>
                 )}
             </div>
+            <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose}>
+                <div className="space-y-4">
+                    <h1 className="text-xl font-semibold text-white">📄 Panduan Pembuatan Surat</h1>
+                    <p className="text-sm text-gray-600">
+                        Gunakan editor teks untuk membuat surat. Ikuti aturan berikut agar sistem dapat mengenali data dengan benar.
+                    </p>
+
+                    <div className="border  border-gray-200 rounded-lg divide-y divide-gray-100">
+                        {[
+                            { label: 'Nama siswa', tag: '{name}' },
+                            { label: 'Email siswa', tag: '{email}' },
+                            { label: 'Password', tag: '{password}' },
+                            { label: 'Alamat siswa', tag: '{address}' },
+                            { label: 'Nomor HP', tag: '{phone}' },
+                            { label: 'Tanggal lahir', tag: '{birthdate}' },
+                            { label: 'Tempat lahir', tag: '{place_of_birth}' },
+                            { label: 'Foto siswa', tag: '{image}' },
+                            { label: 'Jenis kelamin', tag: '{gender}' },
+                            { label: 'Nama kelas', tag: '{class_name}' },
+                            { label: 'Role pengguna', tag: '{role}' },
+                            { label: 'NISN siswa', tag: '{nisn}' },
+                            { label: 'NIS siswa', tag: '{nis}' },
+                        ].map((item, index) => (
+                            <div key={index} className="flex justify-between items-center px-4 py-1 text-sm text-white">
+                                <span>{index + 1}. {item.label}</span>
+                                <span className="font-mono text-gray-500 text-sm">{item.tag}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <p className="text-xs text-gray-500 mt-2">
+                        ⚠️ Pastikan penulisan keyword seperti <code className="font-mono">{'{name} dll'}</code> sesuai agar sistem dapat mengganti dengan data yang benar.
+                    </p>
+                </div>
+            </ModalDefault>
+
+
+
         </DefaultLayout>
     );
 }
