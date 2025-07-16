@@ -150,31 +150,43 @@ const Page = () => {
             const result = await updateRequestUser(form._id, form);
 
             if (result) {
-                toast.success('Data berhasil diperbarui!', { id: toastId });
-                console.log('data yang terkirim ke db', result);
-                // ✅ Selalu kirim email setelah submit
-                try {
-                    await axios.post('/api/send-email', {
-                        to: 'oryzasativacikal@gmail.com', // atau form.email jika dinamis
-                        subject: 'Permohonan Anda Telah Diperbarui',
-                        text: `Halo ${form.title},\n\nPermohonan Anda telah berhasil diproses.\n\nTerima kasih.`,
-                    });
-                    toast.success('Email notifikasi telah dikirim.');
-                } catch (emailError: any) {
-                    console.error('Gagal mengirim email:', emailError.response?.data || emailError);
-                    toast.error('Data berhasil diperbarui, tapi gagal kirim email.');
+                // ✅ Siapkan isi email berdasarkan status
+                let subject = 'Status Permintaan Surat Anda';
+                let text = '';
+
+                if (form.status === 'Selesai') {
+                    text = `Halo ${form.title},\n\nPermintaan surat Anda telah selesai diproses.\nSilakan unduh surat Anda melalui link berikut:\n\nhttps://naya-app-pearl.vercel.app/user_page/${form._id}\n\nTerima kasih.`;
+                } else {
+                    text = `Halo ${form.title},\n\nStatus permintaan surat Anda telah berubah menjadi: ${form.status}`;
                 }
 
+                // ✅ Kirim email jika form.email tersedia
+                if (form.email) {
+                    try {
+                        await axios.post('/api/send-email', {
+                            to: form.email,
+                            subject,
+                            text,
+                        });
+                    } catch (emailError: any) {
+                        console.error('❌ Gagal mengirim email:', emailError.response?.data || emailError);
+                        toast.error('Data diperbarui, tapi gagal kirim email.', { id: toastId });
+                        return;
+                    }
+                }
+
+                toast.success('Data berhasil diperbarui!', { id: toastId });
                 fetchData();
                 onClose();
             } else {
                 toast.error('Gagal memperbarui data.', { id: toastId });
             }
         } catch (error) {
-            console.error('Update error:', error);
+            console.error('❌ Update error:', error);
             toast.error('Terjadi kesalahan saat memperbarui.', { id: toastId });
         }
     };
+
 
 
     const openModalDelete = (item: any) => {
