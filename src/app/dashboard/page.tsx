@@ -24,6 +24,8 @@ import ModalDefault from '@/components/fragments/modal/modal'
 import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method'
 import { formatTanggalToIndo } from '@/utils/helper'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
+import toast from 'react-hot-toast'
+import axios from 'axios'
 
 type Props = {}
 
@@ -47,7 +49,8 @@ const page = (props: Props) => {
         description: "",
         date: "",
         status: "",
-        user_id: ""
+        user_id: "",
+        email: "",
     });
 
 
@@ -136,7 +139,6 @@ const page = (props: Props) => {
         { key: "Ditolak", label: "Ditolak", value: "Ditolak" },
     ];
 
-
     const onSelectionChange = (body: string) => {
         console.log('body', body);
         setForm({
@@ -163,35 +165,81 @@ const page = (props: Props) => {
             description: item.description,
             date: item.date,
             status: item.status,
-            user_id: item.user.id
-
+            user_id: item.user.id,
+            email: item.user.email
         });
     }
+
+    const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const toastId = toast.loading('Menyimpan perubahan...');
+
+        try {
+            const result = await updateRequestUser(form._id, form);
+
+            if (result) {
+                // ✅ Siapkan isi email berdasarkan status
+                let subject = 'Status Permintaan Surat Anda';
+                let text = '';
+
+                if (form.status === 'Selesai') {
+                    text = `Halo ${form.title},\n\nPermintaan surat Anda telah selesai diproses.\nSilakan unduh surat Anda melalui link berikut:\n\nhttps://naya-app-pearl.vercel.app/user_page/${form._id}\n\nTerima kasih.`;
+                } else {
+                    text = `Halo ${form.title},\n\nStatus permintaan surat Anda telah berubah menjadi: ${form.status}`;
+                }
+
+                // ✅ Kirim email jika form.email tersedia
+                if (form.email) {
+                    try {
+                        await axios.post('/api/send-email', {
+                            to: form.email,
+                            subject,
+                            text,
+                        });
+                    } catch (emailError: any) {
+                        console.error('❌ Gagal mengirim email:', emailError.response?.data || emailError);
+                        toast.error('Data diperbarui, tapi gagal kirim email.', { id: toastId });
+                        return;
+                    }
+                }
+
+                toast.success('Data berhasil diperbarui!', { id: toastId });
+                fetchData();
+                onClose();
+            } else {
+                toast.error('Gagal memperbarui data.', { id: toastId });
+            }
+        } catch (error) {
+            console.error('❌ Update error:', error);
+            toast.error('Terjadi kesalahan saat memperbarui.', { id: toastId });
+        }
+    };
+
+
 
     const openModalDelete = (item: any) => {
         setId(item.id);
         onWarningOpen();
     }
-
-    const handleUpdate = async (e: any) => {
-        e.preventDefault();
-        console.log('kunyuk', form);
-        await updateRequestUser(form._id, form).then((result) => {
-            if (result) {
-                fetchData();
-                onClose();
-            }
-        })
-    }
-
     const handleDelete = async () => {
-        deleteRequest(id).then((result) => {
+        const toastId = toast.loading('Menghapus surat...');
+
+        try {
+            const result = await deleteRequest(id);
+
             if (result) {
+                toast.success('Surat berhasil dihapus!', { id: toastId });
                 fetchData();
                 onWarningClose();
+            } else {
+                toast.error('Gagal menghapus surat.', { id: toastId });
             }
-        })
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error('Terjadi kesalahan saat menghapus.', { id: toastId });
+        }
+    };
+
 
     const jumlahSurat = templates.length.toString(); // Mengubah menjadi string
     const suratBelumDisetujui = data.filter((item) => item.status !== 'Selesai').length.toString(); // Mengubah menjadi string
@@ -256,10 +304,9 @@ const page = (props: Props) => {
                                         {columnKey === 'action' ? (
                                             <div className="flex gap-2">
                                                 <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
-                                                    KIRIM SURAT
+                                                    MANAGE
                                                 </button>
-                                                <button className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  "
-                                                    onClick={() => openModalDelete(item)}>
+                                                <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
                                                     DELETE
                                                 </button>
                                             </div>
@@ -277,47 +324,86 @@ const page = (props: Props) => {
             </div>
 
 
-            <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose} >
-                <form onSubmit={handleUpdate} className='text-white'>
-                    <h1 className='mb-12 ' >KIRIM SURAT</h1>
-                    <div className="space-y-3">
-                        <h2>Meminta Surat Bernama : {form.title}</h2>
-                        <h2>Dengan Tipe Surat : {form.type}</h2>
-                        <h2>Dengan Tanggal : {formatTanggalToIndo(form.date)}</h2>
-                        <h2>Status saat ini : {form.status}</h2>
-                        <div >
-                            <h1 className='mb-2' >Berikan Jenis Surat</h1>
-                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChange(e)} value={form.type}>
+            <ModalDefault className="bg-secondBlack p-6 rounded-xl shadow-xl" isOpen={isOpen} onClose={onClose}>
+                <form onSubmit={handleUpdate} className="text-white space-y-6">
+                    <h1 className="text-2xl font-bold text-center border-b border-white/10 pb-4">
+                        📩 Permintaan Surat
+                    </h1>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Nama Surat</p>
+                            <p className="text-lg font-semibold">{form.title}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Tipe Surat</p>
+                            <p className="text-lg font-semibold">{form.type}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Tanggal Dibutuhkan</p>
+                            <p className="text-lg font-semibold">{formatTanggalToIndo(form.date)}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-sm text-white/60">Status Saat Ini</p>
+                            <p className="text-lg font-semibold">{form.status}</p>
+                        </div>
+
+                        <div className="md:col-span-2 space-y-2">
+                            <p className="text-sm text-white/60">Deskripsi Siswa</p>
+                            <p className="text-base">{form.description}</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Jenis Surat</label>
+                            <Autocomplete
+                                className="max-w-xs"
+                                onSelectionChange={(e: any) => onSelectionChange(e)}
+                                value={form.type}
+                            >
                                 {templates.map((item) => (
                                     <AutocompleteItem key={item.body}>{item.name}</AutocompleteItem>
                                 ))}
                             </Autocomplete>
                         </div>
-                        <div >
-                            <h1 className='mb-2' >Masukan Status Surat</h1>
-                            <Autocomplete className="max-w-xs" onSelectionChange={(e: any) => onSelectionChangeStatus(e)} value={form.status} selectedKey={form.status}>
+
+                        <div>
+                            <label className="block text-sm mb-2 text-white/70">📌 Ubah Status Surat</label>
+                            <Autocomplete
+                                className="max-w-xs"
+                                onSelectionChange={(e: any) => onSelectionChangeStatus(e)}
+                                value={form.status}
+                                selectedKey={form.status}
+                            >
                                 {dataStatus.map((item) => (
                                     <AutocompleteItem key={item.key}>{item.value}</AutocompleteItem>
                                 ))}
                             </Autocomplete>
                         </div>
                     </div>
-                    <div className="flex justify-end gap-2 mt-12">
+
+                    <div className="flex justify-end gap-3 mt-10">
                         <button
-                            type='submit'
-                            className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
+                            type="submit"
+                            className="bg-blue-700 hover:bg-blue-800 transition px-4 py-2 rounded-lg text-white text-sm shadow"
                         >
-                            KIRIM
+                            ✅ KIRIM
                         </button>
                         <button
-                            className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm "
+                            type="button"
                             onClick={onClose}
+                            className="bg-red-700 hover:bg-red-800 transition px-4 py-2 rounded-lg text-white text-sm shadow"
                         >
-                            BATAL
+                            ❌ BATAL
                         </button>
                     </div>
                 </form>
             </ModalDefault>
+
 
             <ModalAlert isOpen={isWarningOpen} onClose={onWarningClose} >
                 apakah anda yakin akan menghapus surat ini ?
