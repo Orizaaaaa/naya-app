@@ -69,7 +69,7 @@ const page = (props: Props) => {
             <div style="margin-top: 50px; text-align: right;">
               <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {date}</p>
               <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
-              <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
+              <img src="/ttd.png" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
               <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd</p>
               <p style="margin-bottom: 0; line-height: 1.5;">NIP. 197007202005011008</p>
             </div>
