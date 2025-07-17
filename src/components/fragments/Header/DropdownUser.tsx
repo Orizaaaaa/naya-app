@@ -1,7 +1,5 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { capitalizeWords } from "@/utils/helper";
 import { realLogo } from "@/app/image";
 
@@ -63,7 +61,7 @@ const DropdownUser = () => {
           <img
             className="w-full h-full object-cover rounded-full"
             // nanti profile di sini
-            src='https://cdn-icons-png.freepik.com/256/4395/4395949.png'
+            src='https://sman1margaasih.sch.id/assets/img/logo.png'
             alt="admin-profile"
           />
         </div>
