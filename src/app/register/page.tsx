@@ -16,6 +16,8 @@ import { parseDate } from '@internationalized/date'
 import { address } from "framer-motion/client";
 import DropdownCustom from "@/components/dropdown/dropdownCustom";
 import { registerUser } from "@/api/auth";
+import Image from "next/image";
+import { realLogo } from "../image";
 // Pastikan ini ada
 
 const Register = () => {
@@ -231,8 +233,11 @@ const Register = () => {
             <div className="container mx-auto flex flex-grow justify-center items-center w-full">
 
                 <form className='p-6 bg-[#e9e9e9] rounded-lg m-3 w-[350px] sm:w-[400px] md:w-[450px] lg:w-[500px]' onSubmit={handleRegister}>
+                    <div className="logo flex justify-center my-5">
+                        <Image src={realLogo} alt="logo" width={180} height={130} />
+                    </div>
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.name} placeholder='Masukkan Nama' type='text' htmlFor='name' value={form.name} onChange={handleChange} />
-                    <div className="flex gap-4">
+                    <div className="md:flex gap-4">
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.nisn} placeholder='Masukkan NISN' type='text' htmlFor='nisn' value={form.nisn} onChange={handleChange} />
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.nis} placeholder='Masukkan NIS' type='text' htmlFor='nis' value={form.nis} onChange={handleChange} />
                     </div>
@@ -240,7 +245,7 @@ const Register = () => {
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.place_of_birth} placeholder='Tempat Lahir' type='text' htmlFor='place_of_birth' value={form.place_of_birth} onChange={handleChange} />
 
 
-                    <div className="flex gap-3">
+                    <div className="md:flex gap-3">
                         <div className="w-full">
                             <h1 className="text-sm text-gray-400" >Jenis Kelamin</h1>
 
@@ -255,7 +260,7 @@ const Register = () => {
                             </DropdownCustom> */}
                             {errorMsg.gender && <p className="text-red-500 text-xs mt-1">{errorMsg.gender}</p>}
                         </div>
-                        <div className="w-full"> {/* Changed to w-full for better responsiveness */}
+                        <div className="w-full mt-3 md:mt-0"> {/* Changed to w-full for better responsiveness */}
                             <h1 className="text-sm text-gray-400" >Nama Kelas</h1>
                             <InputForm className='bg-slate-300 ' errorMsg={errorMsg.class_name} type='text' htmlFor='class_name' value={form.class_name} onChange={handleChange} />
                         </div>
@@ -279,7 +284,7 @@ const Register = () => {
 
                     <InputForm className='bg-slate-300' errorMsg={errorMsg.address} placeholder='Alamat Lengkap' type='text' htmlFor='address' value={form.address} onChange={handleChange} />
 
-                    <div className="flex gap-3">
+                    <div className="md:flex gap-3">
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.email} placeholder='Masukkan Email' type='email' htmlFor='email' value={form.email} onChange={handleChange} />
                         <InputForm className='bg-slate-300' errorMsg={errorMsg.phone} placeholder='Masukkan No HP' type='text' htmlFor='phone' value={form.phone} onChange={handleChange} />
                     </div>
