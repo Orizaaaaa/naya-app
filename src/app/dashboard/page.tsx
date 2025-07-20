@@ -330,7 +330,7 @@ const page = (props: Props) => {
                         <TableColumn key="title">JUDUL SURAT</TableColumn>
                         <TableColumn key="formatted_date">TANGGAL</TableColumn>
                         <TableColumn key="status">STATUS</TableColumn>
-                        <TableColumn key="score">SCORE</TableColumn>
+                        <TableColumn key="score">PRIORITAS</TableColumn>
                         <TableColumn key="action">ACTION</TableColumn>
 
                     </TableHeader>

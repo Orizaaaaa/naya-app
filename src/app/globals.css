@@ -34,3 +34,7 @@
      min-height: 297mm;
    }
  }
+
+ button {
+   cursor: pointer;
+ }

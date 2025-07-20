@@ -134,7 +134,7 @@ function page({ }: Props) {
             <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose} closeButton={false} >
                 <h1 className='text-white mb-6' >PERMINTAAN SURAT</h1>
                 <form onSubmit={handleCreateMessage}>
-                    <InputForm className='bg-white rounded-xl' placeholder='Deskripsi' type='text' htmlFor='description' value={form.description} onChange={handleChange} />
+                    <InputForm className='bg-white rounded-xl' placeholder='Alasan permintaan surat' type='text' htmlFor='description' value={form.description} onChange={handleChange} />
 
                     <div className="text-white">
                         <DatePicker
