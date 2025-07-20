@@ -10,7 +10,7 @@ type Props = {}
 
 const page = (props: Props) => {
     const { id }: any = useParams()
-
+    const [loadingButton, setLoadingButton] = useState(false);
     const [loading, setLoading] = useState(false);
     const [form, setForm]: any = useState({
         title: "",
@@ -38,6 +38,7 @@ const page = (props: Props) => {
 
 
     const fetchDataMessage = async (id: string) => {
+        setLoadingButton(true);
         try {
             const res: any = await getMessageUser(id);
 
@@ -50,7 +51,7 @@ const page = (props: Props) => {
                     birthdate: formatTanggalIndoSecond(res.data.user.birthdate),
                 },
             };
-
+            setLoadingButton(false);
             setForm(updatedData);
         } catch (error) {
             console.error('Gagal fetch data:', error);
@@ -144,19 +145,25 @@ const page = (props: Props) => {
 
     return (
         <div className="bg-black h-screen flex items-center justify-center">
-            <button
-                onClick={() => generateDataDownload(form)}
-                className="bg-primary text-white px-5 py-2 rounded-lg flex gap-3 justify-center items-center cursor-pointer"
-            >
-                {loading ? (
-                    <Spinner className="w-5 h-5" size="sm" color="white" />
-                ) : (
-                    <>
-                        DOWNLOAD
-                        <MdDownloading size={20} color="white" />
-                    </>
-                )}
-            </button>
+
+            {loadingButton ? (
+                <Spinner className="w-5 h-5" size="sm" color="white" />
+            ) : (
+                <button
+                    onClick={() => generateDataDownload(form)}
+                    className="bg-primary text-white px-5 py-2 rounded-lg flex gap-3 justify-center items-center cursor-pointer"
+                >
+                    {loading ? (
+                        <Spinner className="w-5 h-5" size="sm" color="white" />
+                    ) : (
+                        <>
+                            DOWNLOAD
+                            <MdDownloading size={20} color="white" />
+                        </>
+                    )}
+                </button>
+            )}
+
 
         </div>
 
