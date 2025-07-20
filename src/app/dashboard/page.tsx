@@ -32,6 +32,7 @@ type Props = {}
 const page = (props: Props) => {
     const [id, setId] = React.useState('');
     const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu'>('Menunggu');
 
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
@@ -57,10 +58,13 @@ const page = (props: Props) => {
 
 
     const filteredData = React.useMemo(() => {
-        return data.filter((item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [data, searchTerm]);
+        return data.filter((item) => {
+            const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchStatus = statusFilter === 'Semua' || item.status === statusFilter;
+            return matchSearch && matchStatus;
+        });
+    }, [data, searchTerm, statusFilter]);
+
 
     const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -108,20 +112,6 @@ const page = (props: Props) => {
         fetchData();
     }, []);
 
-
-
-    // ========================
-    // TEMPLATE FIXED FOOTER
-    // ========================
-    const fixedFooterTemplate = `
-            <div style="margin-top: 50px; text-align: right;">
-              <p style="margin-bottom: 0; line-height: 1.5;">Bandung, {tanggal}</p>
-              <p style="margin-bottom: 0; line-height: 1.5;">Kepala Sekolah,</p>
-              <img src="{signatureImageUrl}" alt="Tanda Tangan" style="width: 100px; height: 100px; display: block; margin-left: auto; margin-right: 0; margin-top: 10px; margin-bottom: 5px; object-fit: contain;" onerror="this.style.display='none';">
-              <p style="margin-bottom: 0; line-height: 1.5;">Toteng Suhara, S.Pd., M.M.Pd</p>
-              <p style="margin-bottom: 0; line-height: 1.5;">NIP. 197007202005011008</p>
-            </div>
-          `;
 
     // ========================
     // EFFECT: CEK MULTI HALAMAN
@@ -295,6 +285,25 @@ const page = (props: Props) => {
                     />
 
                 </div>
+
+                {/* filter berdasarkan status yang default adalah status menunggu,  */}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setStatusFilter('Semua')}
+                        className={`px-3 py-2 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom
+            ${statusFilter === 'Semua' ? 'bg-blue-700 text-white' : 'bg-secondBlack text-white'}`}
+                    >
+                        Semua
+                    </button>
+                    <button
+                        onClick={() => setStatusFilter('Menunggu')}
+                        className={`px-3 py-2 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom
+            ${statusFilter === 'Menunggu' ? 'bg-blue-700 text-white' : 'bg-secondBlack text-white'}`}
+                    >
+                        Menunggu
+                    </button>
+                </div>
+
                 <Table
                     aria-label="Daftar Permintaan Surat"
                     bottomContent={
