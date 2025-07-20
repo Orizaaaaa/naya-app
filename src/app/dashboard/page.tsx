@@ -258,6 +258,16 @@ const page = (props: Props) => {
     console.log("data form", form);
 
 
+    const rounded = (value: number, decimals: number = 2): number => {
+        const factor = 10 ** decimals;
+        return Math.round(value * factor) / factor;
+    };
+
+
+
+    ; // hasil: 0.09
+
+
 
 
     return (
@@ -311,6 +321,7 @@ const page = (props: Props) => {
                         <TableColumn key="title">JUDUL SURAT</TableColumn>
                         <TableColumn key="formatted_date">TANGGAL</TableColumn>
                         <TableColumn key="status">STATUS</TableColumn>
+                        <TableColumn key="score">SCORE</TableColumn>
                         <TableColumn key="action">ACTION</TableColumn>
 
                     </TableHeader>
@@ -321,17 +332,24 @@ const page = (props: Props) => {
                                     <TableCell>
                                         {columnKey === 'action' ? (
                                             <div className="flex gap-2">
-                                                <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
+                                                <button
+                                                    onClick={() => openModalSend(item)}
+                                                    className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
+                                                >
                                                     MANAGE
                                                 </button>
-                                                <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
+                                                <button
+                                                    onClick={() => openModalDelete(item)}
+                                                    className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
+                                                >
                                                     DELETE
                                                 </button>
                                             </div>
-                                        ) :
-                                            (
-                                                getKeyValue(item, columnKey)
-                                            )}
+                                        ) : columnKey === 'score' ? (
+                                            <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
+                                        ) : (
+                                            getKeyValue(item, columnKey)
+                                        )}
 
                                     </TableCell>
                                 )}
