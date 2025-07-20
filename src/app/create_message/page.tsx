@@ -226,6 +226,21 @@ function Page() {
         }
     };
 
+    const dataTipe = [
+        { key: "Surat keterangan baik", label: "Surat keterangan baik", value: "Surat keterangan baik" },
+        { key: "Surat Dispensasi", label: "Surat Dispensasi", value: "Surat Dispensasi" },
+        { key: "Surat Keterangan Aktif", label: "Surat Keterangan Aktif", value: "Surat Keterangan Aktif" },
+    ];
+
+    const onSelectionChange = (item: string) => {
+        console.log('item', item);
+        setForm({
+            ...form,
+            type: item
+        });
+    };
+
+    console.log('form', form);
 
     return (
         <DefaultLayout>
@@ -237,21 +252,23 @@ function Page() {
                 </button>
                 <div className="grid grid-cols-2 gap-3 w-full ">
                     <InputForm
-                        className="bg-white "
+                        className="bg-white rounded-xl "
                         placeholder="Masukkan Nama Surat"
                         type="name"
                         htmlFor="name"
                         value={form.name}
                         onChange={handleChange}
                     />
-                    <InputForm
-                        className="bg-white "
-                        placeholder="Masukkan Tipe"
-                        type="text"
-                        htmlFor="type"
+                    <Autocomplete
+                        placeholder="Pilih Tipe Surat"
+                        className="w-full"
+                        onSelectionChange={(e: any) => onSelectionChange(e)}
                         value={form.type}
-                        onChange={handleChange}
-                    />
+                    >
+                        {dataTipe.map((item) => (
+                            <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+                        ))}
+                    </Autocomplete>
                 </div>
 
 
