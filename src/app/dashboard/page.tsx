@@ -22,7 +22,7 @@ import CardBar from '@/components/fragments/cardBox/CardBar'
 import { IoSearch } from 'react-icons/io5'
 import ModalDefault from '@/components/fragments/modal/modal'
 import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method'
-import { formatTanggalToIndo } from '@/utils/helper'
+import { formatTanggalToIndo, getStatusColor } from '@/utils/helper'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import toast from 'react-hot-toast'
 import axios from 'axios'
@@ -347,9 +347,12 @@ const page = (props: Props) => {
                                             </div>
                                         ) : columnKey === 'score' ? (
                                             <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
-                                        ) : (
-                                            getKeyValue(item, columnKey)
-                                        )}
+                                        ) : columnKey === 'status' ? (
+                                            <p className={`${getStatusColor(item.status)}`}>{item.status}</p>
+                                        )
+                                            : (
+                                                getKeyValue(item, columnKey)
+                                            )}
 
                                     </TableCell>
                                 )}

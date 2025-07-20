@@ -85,7 +85,21 @@ export function formatTanggalToIndo(dateString: string): string {
     return `${hariNama}, ${tanggal}, ${bulan}, ${tahun}`;
 }
 
-
+export const getStatusColor = (status: string) => {
+    // Konversi ke lowercase untuk pengecekan yang konsisten
+    switch (status) {
+        case 'Selesai':
+            return 'bg-green-500 text-white p-1 rounded-lg text-center'; // Hijau
+        case 'Diproses':
+            return 'bg-blue-500 text-white p-1 rounded-lg text-center'; // Biru
+        case 'Menunggu':
+            return 'bg-yellow-500 text-black p-1 rounded-lg text-center'; // Kuning
+        case 'Ditolak':
+            return 'bg-red-500 text-white p-1 rounded-lg text-center'; // Merah
+        default:
+            return 'bg-gray-500 text-white p-1 rounded-lg text-center'; // Default
+    }
+};
 export function formatTanggalIndoSecond(dateString: string): string {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
