@@ -63,14 +63,22 @@ function page({ }: Props) {
 
     const handleCreateMessage = async (e: any) => {
         e.preventDefault();
-        const toastId = toast.loading('Mengirim permintaan surat...');
 
+        // Validasi awal
+        if (!form.date || !form.description.trim()) {
+            toast.error('Tanggal dan deskripsi tidak boleh kosong!');
+            return;
+        }
+
+        const toastId = toast.loading('Mengirim permintaan surat...');
         setLoading(true);
+
         try {
             const data = {
                 ...form,
                 date: formatDateStr(form.date), // pastikan penamaan tepat
             };
+
             await createRequestMessage(data, (result: any) => {
                 if (result) {
                     toast.success('Permintaan berhasil dikirim!', { id: toastId });
@@ -83,7 +91,6 @@ function page({ }: Props) {
                         description: "",
                         date: parseDate(formatDate(dateNow)),
                         status: "menunggu",
-
                     });
                 }
             });
@@ -94,6 +101,7 @@ function page({ }: Props) {
             setLoading(false);
         }
     };
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
