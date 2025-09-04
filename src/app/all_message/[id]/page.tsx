@@ -227,9 +227,9 @@ function page({ }: Props) {
                             />
 
                             <div className='mb-3'>
-                                <h1 className='text-white '>Tipe Surat</h1>
+                                <h1 className='text-white '>Kategori Surat</h1>
                                 <Autocomplete
-                                    placeholder="Pilih Tipe Surat"
+                                    placeholder="Pilih Kategori Surat"
                                     className="w-full"
                                     onSelectionChange={(key) => onSelectionChange(key as string)}
                                     selectedKey={form.category_id} // gunakan selectedKey, bukan value

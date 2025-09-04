@@ -277,7 +277,7 @@ function Page() {
                         onChange={handleChange}
                     />
                     <Autocomplete
-                        placeholder="Pilih Tipe Surat"
+                        placeholder="Pilih Kategori Surat"
                         className="w-full"
                         onSelectionChange={(key) => onSelectionChange(key as string)}
                         selectedKey={form.category_id} // gunakan selectedKey, bukan value
