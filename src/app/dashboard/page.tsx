@@ -257,6 +257,7 @@ const page = (props: Props) => {
 
     ; // hasil: 0.09
 
+    console.log('tempates', templates);
 
 
 
@@ -326,7 +327,7 @@ const page = (props: Props) => {
                 >
                     <TableHeader>
                         <TableColumn key="name">NAME</TableColumn>
-                        <TableColumn key="type">TIPE SURAT</TableColumn>
+                        <TableColumn key="type">KATEGORI SURAT</TableColumn>
                         <TableColumn key="title">JUDUL SURAT</TableColumn>
                         <TableColumn key="formatted_date">TANGGAL</TableColumn>
                         <TableColumn key="status">STATUS</TableColumn>
@@ -385,7 +386,7 @@ const page = (props: Props) => {
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Tipe Surat</p>
+                            <p className="text-sm text-white/60">Kategori Surat</p>
                             <p className="text-lg font-semibold">{form.type}</p>
                         </div>
 
