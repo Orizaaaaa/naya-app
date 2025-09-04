@@ -26,13 +26,16 @@ function page({ }: Props) {
     const [form, setForm] = useState({
         user_id: "",
         title: "",
-        type: "",
+        category_id: "",
         body: `default`,
         description: "",
         date: parseDate(formatDate(dateNow)),
         status: "menunggu",
 
     });
+
+    console.log('data', data);
+
 
 
     const fetchData = async () => {
@@ -54,7 +57,7 @@ function page({ }: Props) {
         setForm({
             ...form,
             title: item.name,
-            type: item.type,
+            category_id: item.category.id,
             user_id: userId
         });
         onOpen();
@@ -86,7 +89,7 @@ function page({ }: Props) {
                     setForm({
                         user_id: "",
                         title: "",
-                        type: "",
+                        category_id: "",
                         body: "",
                         description: "",
                         date: parseDate(formatDate(dateNow)),
