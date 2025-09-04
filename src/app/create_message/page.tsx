@@ -7,7 +7,7 @@ import InputForm from '@/components/elements/input/InputForm';
 import { Autocomplete, AutocompleteItem, DatePicker, useDisclosure } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { formatDate } from '@/utils/helper';
-import { createMessageTemplate } from '@/api/method';
+import { createMessageTemplate, getAllCategory } from '@/api/method';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
@@ -22,15 +22,29 @@ import ModalDefault from '@/components/fragments/modal/modal';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
 function Page() {
+    const [listCategory, setListCategory] = useState([]);
     const { onOpen, onClose, isOpen } = useDisclosure();
     const dateNow = new Date();
     const editor = useRef(null);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
+    const fetchData = async () => {
+        try {
+            const res: any = await getAllCategory();
+
+            setListCategory(res.data);
+        } catch (error) {
+            console.error('Gagal fetch data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const [form, setForm] = useState({
         name: "",
-        type: "",
+        category_id: "",
         body: `
         <div style="position: relative; border-bottom: 3px double black; padding-bottom: 10px; margin-bottom: 20px; min-height: 100px;">
             <img src="/sekolah_logo.png" alt="logo" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
@@ -204,7 +218,7 @@ function Page() {
     const router = useRouter();
     const handleCreate = async () => {
         // Validasi semua field wajib diisi
-        if (!form.name || !form.type || !form.body.trim()) {
+        if (!form.name || !form.category_id || !form.body.trim()) {
             toast.error("Semua data wajib diisi!");
             return;
         }
@@ -232,15 +246,18 @@ function Page() {
         { key: "Surat Keterangan Aktif", label: "Surat Keterangan Aktif", value: "Surat Keterangan Aktif" },
     ];
 
-    const onSelectionChange = (item: string) => {
-        console.log('item', item);
+    const onSelectionChange = (id: string) => {
+        console.log('selected id:', id);
         setForm({
             ...form,
-            type: item
+            category_id: id, // simpan _id langsung
         });
     };
 
-    console.log('form', form);
+
+    console.log(listCategory);
+    console.log(form);
+
 
     return (
         <DefaultLayout>
@@ -262,13 +279,16 @@ function Page() {
                     <Autocomplete
                         placeholder="Pilih Tipe Surat"
                         className="w-full"
-                        onSelectionChange={(e: any) => onSelectionChange(e)}
-                        value={form.type}
+                        onSelectionChange={(key) => onSelectionChange(key as string)}
+                        selectedKey={form.category_id} // gunakan selectedKey, bukan value
                     >
-                        {dataTipe.map((item) => (
-                            <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+                        {listCategory.map((item: any) => (
+                            <AutocompleteItem key={item._id}>
+                                {item.name}
+                            </AutocompleteItem>
                         ))}
                     </Autocomplete>
+
                 </div>
 
 
