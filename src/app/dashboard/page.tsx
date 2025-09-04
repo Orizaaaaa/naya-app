@@ -101,7 +101,7 @@ const page = (props: Props) => {
     const fetchDatTemplate = async () => {
         try {
             const res: any = await getAllTemplate();
-            setTemplate(res.data);
+            setTemplate(res?.data);
         } catch (error) {
             console.error('Gagal fetch data:', error);
         }
@@ -337,7 +337,7 @@ const page = (props: Props) => {
                     </TableHeader>
                     <TableBody items={items}>
                         {(item: any) => (
-                            <TableRow key={item._id}>
+                            <TableRow key={item?._id}>
                                 {(columnKey) => (
                                     <TableCell>
                                         {columnKey === 'action' ? (
@@ -358,7 +358,7 @@ const page = (props: Props) => {
                                         ) : columnKey === 'score' ? (
                                             <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
                                         ) : columnKey === 'status' ? (
-                                            <p className={`${getStatusColor(item.status)}`}>{item.status}</p>
+                                            <p className={`${getStatusColor(item?.status)}`}>{item?.status}</p>
                                         )
                                             : (
                                                 getKeyValue(item, columnKey)
