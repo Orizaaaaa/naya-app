@@ -1,8 +1,8 @@
 'use client'
-import { getTemplateById, updateTemplate } from '@/api/method';
+import { getAllCategory, getTemplateById, updateTemplate } from '@/api/method';
 import InputForm from '@/components/elements/input/InputForm';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
-import { Spinner } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Spinner } from '@heroui/react';
 import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -11,6 +11,7 @@ const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 type Props = {}
 
 function page({ }: Props) {
+    const [listCategory, setListCategory] = useState([]);
     const [loading, setLoading] = useState(false)
     const editor = useRef(null);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
@@ -19,17 +20,19 @@ function page({ }: Props) {
     const { id }: any = useParams()
     const [form, setForm] = React.useState({
         name: "",
-        type: "",
+        category_id: "",
         body: ``,
     });
     const fetchData = async () => {
         setLoading(true)
         try {
+            const res: any = await getAllCategory();
+            setListCategory(res.data);
             const result = await getTemplateById(id); // ✅ terima data langsung
             setData(result.data); // ✅ langsung set data
             setForm({
                 name: result.data.name,
-                type: result.data.type,
+                category_id: result.data.category.id,
                 body: result.data.body
             });
             setLoading(false)
@@ -194,18 +197,26 @@ function page({ }: Props) {
         }
     };
 
+    const onSelectionChange = (id: string) => {
+        console.log('selected id:', id);
+        setForm({
+            ...form,
+            category_id: id, // simpan _id langsung
+        });
+    };
 
-    console.log('kunyuk', data);
-    console.log('kunyuk2', form);
+
+    console.log('data', data);
+    console.log('form', form);
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold text-white mb-6 text-center">DETAIL TEMPLATE SURAT</h1>
                 {!loading ? (
                     <>
-                        <div className="grid grid-cols-2 gap-3 w-full ">
+                        <div className="grid grid-cols-2 gap-3 w-full items-center ">
                             <InputForm
-                                styleTitle='text-white mb-2'
+                                styleTitle='text-white mb-3'
                                 title='Nama Surat'
                                 className="bg-white "
                                 placeholder="Masukkan Nama Surat"
@@ -214,16 +225,23 @@ function page({ }: Props) {
                                 value={form.name}
                                 onChange={handleChange}
                             />
-                            <InputForm
-                                styleTitle='text-white mb-2'
-                                title='Tipe Surat'
-                                className="bg-white "
-                                placeholder="Masukkan Tipe"
-                                type="text"
-                                htmlFor="type"
-                                value={form.type}
-                                onChange={handleChange}
-                            />
+
+                            <div className='mb-3'>
+                                <h1 className='text-white '>Tipe Surat</h1>
+                                <Autocomplete
+                                    placeholder="Pilih Tipe Surat"
+                                    className="w-full"
+                                    onSelectionChange={(key) => onSelectionChange(key as string)}
+                                    selectedKey={form.category_id} // gunakan selectedKey, bukan value
+                                >
+                                    {listCategory.map((item: any) => (
+                                        <AutocompleteItem key={item._id}>
+                                            {item.name}
+                                        </AutocompleteItem>
+                                    ))}
+                                </Autocomplete>
+                            </div>
+
                         </div>
 
 

@@ -63,7 +63,7 @@ const page = (props: Props) => {
                     <SpotlightCard key={item.id} className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
                         <h1>{item.name}</h1>
                         <div className="flex mt-4">
-                            <h2 className='bg-blue-500/10 px-3 py-1 rounded-full text-sm' >{item.type}</h2>
+                            <h2 className='bg-blue-500/10 px-3 py-1 rounded-full text-sm' >{item?.category?.name || '-'}</h2>
                         </div>
 
                         <div className="grid grid-cols-2 gap-5 mt-5">
