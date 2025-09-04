@@ -110,3 +110,45 @@ export const createRequestMessage = async (form: any, callback: any) => {
             console.log(err);
         });
 }
+
+export const getAllCategory = async () => {
+    try {
+        const res = await axiosInterceptor.get('/categories/list');
+        return res.data; // ✅ return data
+    } catch (err) {
+        console.error(err);
+        return []; // atau null, tergantung kebutuhan
+    }
+};
+
+// service
+export const createCategory = async (form: any) => {
+    try {
+        const result = await axiosInterceptor.post('/categories', form)
+        return result.data
+    } catch (err) {
+        console.log(err)
+        throw err
+    }
+}
+
+
+export const deleteCategory = async (id: any) => {
+    try {
+        const result = await axiosInterceptor.delete(`/categories/${id}`)
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+export const updateCategory = async (id: any, form: any) => {
+    try {
+        const result = await axiosInterceptor.put(`/categories/${id}`, form);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
