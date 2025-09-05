@@ -4,6 +4,7 @@ import InputForm from '@/components/elements/input/InputForm'
 import ModalDefault from '@/components/fragments/modal/modal'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import DefaultLayout from '@/components/layouts/DefaultLayout'
+import { useAuth } from '@/hook/AuthContext'
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, useDisclosure } from '@heroui/react'
 import { on } from 'events'
 import React, { useEffect } from 'react'
@@ -133,12 +134,13 @@ const page = (props: Props) => {
     }
 
     console.log(data);
-
+    const { role } = useAuth();
     return (
         <DefaultLayout>
-            <div className="flex justify-end mb-4">
+            {role === 'admin' && <div className="flex justify-end mb-4">
                 <button onClick={() => openCreate()} className='bg-primary text-white px-4 py-2 rounded-md' >Tambah Kategori</button>
-            </div>
+            </div>}
+
             <div className="grid grid-cols-3 gap-4">
                 {data.map((item: any, index: number) => (
                     <div className="  bg-white rounded-xl shadow-lg overflow-hidden " key={index}>
@@ -152,10 +154,13 @@ const page = (props: Props) => {
                             <p className="text-gray-600 text-sm h-16 overflow-hidden">
                                 {item.description}
                             </p>
-                            <div className="flex justify-end gap-2 items-center">
-                                <BiSolidEdit onClick={() => openUpdate(item)} className='cursor-pointer' color='blue' size={25} />
-                                <FaTrashAlt onClick={() => openDeleteModal(item)} className='cursor-pointer' color='red' size={19} />
-                            </div>
+                            {role === 'admin' && (
+                                <div className="flex justify-end gap-2 items-center">
+                                    <BiSolidEdit onClick={() => openUpdate(item)} className='cursor-pointer' color='blue' size={25} />
+                                    <FaTrashAlt onClick={() => openDeleteModal(item)} className='cursor-pointer' color='red' size={19} />
+                                </div>
+                            )}
+
                         </div>
                     </div>
                 ))}
