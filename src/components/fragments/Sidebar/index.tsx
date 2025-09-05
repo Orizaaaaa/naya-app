@@ -16,6 +16,7 @@ import { TbMoneybag } from "react-icons/tb";
 import { HiOutlineArchiveBox } from "react-icons/hi2";
 import { SiGitbook } from "react-icons/si";
 import { BsPersonFillGear } from "react-icons/bs";
+import { useAuth } from "@/hook/AuthContext";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -23,6 +24,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const { role } = useAuth();
   const pathname = usePathname();
 
   const trigger = useRef<any>(null);
@@ -122,7 +124,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
               <NavigationList icon={<MdDashboard size={24} />} title="Home" pathname="/dashboard" />
               <NavigationList icon={<BsPersonFillGear size={24} />} title="Permintaan Surat" pathname="/request_message" />
-              <NavigationList icon={<LuBookPlus size={24} />} title="Buat Surat" pathname="/create_message" />
+              {role === "admin" && <NavigationList icon={<LuBookPlus size={24} />} title="Buat Surat" pathname="/create_message" />}
               <NavigationList icon={<SiGitbook size={24} />} title="Semua Surat" pathname="/all_message" />
               <NavigationList icon={<MdOutlineMoveToInbox size={24} />} title="Kategori Bobot" pathname="/category_message" />
               <ButtonSecondary className="w-full py-1 rounded-md font-medium mt-20 cursor-pinter" onClick={handleLogout} >Logout</ButtonSecondary>
