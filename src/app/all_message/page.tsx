@@ -3,6 +3,7 @@ import { deleteTemplate, getAllTemplate } from '@/api/method'
 import SpotlightCard from '@/components/fragments/cardBox/CardSpot'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import DefaultLayout from '@/components/layouts/DefaultLayout'
+import { useAuth } from '@/hook/AuthContext'
 import { useDisclosure } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
@@ -35,7 +36,7 @@ const page = (props: Props) => {
     }, []);
 
     console.log(data);
-
+    const { role } = useAuth();
     const handleDeleteTemplate = async () => {
         const toastId = toast.loading('Menghapus template...');
 
@@ -65,14 +66,18 @@ const page = (props: Props) => {
                         <div className="flex mt-4">
                             <h2 className='bg-blue-500/10 px-3 py-1 rounded-full text-sm' >{item?.category?.name || '-'}</h2>
                         </div>
+                        {
+                            role === 'admin' && (
+                                <div className="grid grid-cols-2 gap-5 mt-5">
+                                    <button onClick={() => router.push(`/all_message/${item.id}`)} className='bg-blue-500/30 cursor-pointer rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
+                                        <LuSquarePen />
+                                        <p>Edit</p>
+                                    </button>
+                                    <button className='bg-red-900  rounded-lg p-1 cursor-pointer' onClick={() => openModalDelete(item.id)}>Hapus</button>
+                                </div>
+                            )
+                        }
 
-                        <div className="grid grid-cols-2 gap-5 mt-5">
-                            <button onClick={() => router.push(`/all_message/${item.id}`)} className='bg-blue-500/30 cursor-pointer rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
-                                <LuSquarePen />
-                                <p>Edit</p>
-                            </button>
-                            <button className='bg-red-900  rounded-lg p-1 cursor-pointer' onClick={() => openModalDelete(item.id)}>Hapus</button>
-                        </div>
                     </SpotlightCard>
                 ))}
             </div>
