@@ -26,10 +26,12 @@ import { formatTanggalToIndo, getStatusColor } from '@/utils/helper'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import { useAuth } from '@/hook/AuthContext'
 
 type Props = {}
 
 const page = (props: Props) => {
+    const { role } = useAuth();
     const [id, setId] = React.useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu'>('Menunggu');
@@ -258,6 +260,7 @@ const page = (props: Props) => {
     ; // hasil: 0.09
 
     console.log('tempates', templates);
+    console.log('role', role);
 
 
 

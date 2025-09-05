@@ -13,8 +13,10 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { loginService } from '@/api/auth';
 import { logo, oneLogo, realLogo } from './image';
 import { Spinner } from '@heroui/react';
+import { useAuth } from '@/hook/AuthContext';
 
 const Login = () => {
+  const { setRole } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(true);
   const [errorLogin, setErrorLogin] = useState('');
@@ -79,7 +81,6 @@ const Login = () => {
     // Lakukan login
     await loginService(form, (status: boolean, res: any) => {
       if (status) {
-        console.log('kanjut', res.data);
         setErrorLogin('');
         const tokenCookies = `token=${res.data.token}`;
         const roleCookies = `role=${res.data.role}`;
@@ -90,14 +91,19 @@ const Login = () => {
         localStorage.setItem('image', res.data.image);
         localStorage.setItem('role', res.data.user.role);
         localStorage.setItem('token', res.data.token);
+        setRole(res.data.user.role);
         setLoading(false);
 
         // Redirect berdasarkan role
         if (res.data.user.role === 'user') {
           router.push('/user_page');
-        } else if (res.data.user.role === 'admin') {
+        }
+        else if (res.data.user.role === 'admin') {
+          router.push('/dashboard');
+        } else {
           router.push('/dashboard');
         }
+
       } else {
         setErrorLogin('*Email atau password salah');
         console.log(res.data);
