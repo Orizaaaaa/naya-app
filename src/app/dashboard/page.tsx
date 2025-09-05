@@ -308,71 +308,124 @@ const page = (props: Props) => {
                     </button>
                 </div>
 
-                <Table
-                    aria-label="Daftar Permintaan Surat"
-                    bottomContent={
-                        <div className="flex w-full justify-center">
-                            <Pagination
-                                isCompact
-                                showControls
-                                showShadow
-                                color="secondary"
-                                page={page}
-                                total={pages}
-                                onChange={(newPage) => setPage(newPage)}
-                            />
-                        </div>
-                    }
-                    classNames={{
-                        th: 'text-white bg-black',
-                        wrapper: 'min-h-[222px] bg-[#16181a] text-white',
-                    }}
-                >
-                    <TableHeader>
-                        <TableColumn key="name">NAME</TableColumn>
-                        <TableColumn key="type">KATEGORI SURAT</TableColumn>
-                        <TableColumn key="title">JUDUL SURAT</TableColumn>
-                        <TableColumn key="formatted_date">TANGGAL</TableColumn>
-                        <TableColumn key="status">STATUS</TableColumn>
-                        <TableColumn key="score">PRIORITAS</TableColumn>
-                        <TableColumn key="action">ACTION</TableColumn>
+                {role !== 'admin' ? (
+                    <Table
+                        aria-label="Daftar Permintaan Surat"
+                        bottomContent={
+                            <div className="flex w-full justify-center">
+                                <Pagination
+                                    isCompact
+                                    showControls
+                                    showShadow
+                                    color="secondary"
+                                    page={page}
+                                    total={pages}
+                                    onChange={(newPage) => setPage(newPage)}
+                                />
+                            </div>
+                        }
+                        classNames={{
+                            th: 'text-white bg-black',
+                            wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                        }}
+                    >
+                        <TableHeader>
+                            <TableColumn key="name">NAME</TableColumn>
+                            <TableColumn key="type">KATEGORI SURAT</TableColumn>
+                            <TableColumn key="title">JUDUL SURAT</TableColumn>
+                            <TableColumn key="formatted_date">TANGGAL</TableColumn>
+                            <TableColumn key="status">STATUS</TableColumn>
+                            <TableColumn key="score">PRIORITAS</TableColumn>
 
-                    </TableHeader>
-                    <TableBody items={items}>
-                        {(item: any) => (
-                            <TableRow key={item?._id}>
-                                {(columnKey) => (
-                                    <TableCell>
-                                        {columnKey === 'action' ? (
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => openModalSend(item)}
-                                                    className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
-                                                >
-                                                    MANAGE
-                                                </button>
-                                                <button
-                                                    onClick={() => openModalDelete(item)}
-                                                    className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
-                                                >
-                                                    DELETE
-                                                </button>
-                                            </div>
-                                        ) : columnKey === 'score' ? (
-                                            <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
-                                        ) : columnKey === 'status' ? (
-                                            <p className={`${getStatusColor(item?.status)}`}>{item?.status}</p>
-                                        )
-                                            : (
-                                                getKeyValue(item, columnKey)
-                                            )}
+                        </TableHeader>
+                        <TableBody items={items}>
+                            {(item: any) => (
+                                <TableRow key={item?._id}>
+                                    {(columnKey) => (
+                                        <TableCell>
+                                            {columnKey === 'action' ? (
+                                                <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
+                                            ) : columnKey === 'status' ? (
+                                                <p className={`${getStatusColor(item?.status)}`}>{item?.status}</p>
+                                            )
+                                                : (
+                                                    getKeyValue(item, columnKey)
+                                                )}
 
-                                    </TableCell>
-                                )}
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <Table
+                        aria-label="Daftar Permintaan Surat"
+                        bottomContent={
+                            <div className="flex w-full justify-center">
+                                <Pagination
+                                    isCompact
+                                    showControls
+                                    showShadow
+                                    color="secondary"
+                                    page={page}
+                                    total={pages}
+                                    onChange={(newPage) => setPage(newPage)}
+                                />
+                            </div>
+                        }
+                        classNames={{
+                            th: 'text-white bg-black',
+                            wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                        }}
+                    >
+                        <TableHeader>
+                            <TableColumn key="name">NAME</TableColumn>
+                            <TableColumn key="type">KATEGORI SURAT</TableColumn>
+                            <TableColumn key="title">JUDUL SURAT</TableColumn>
+                            <TableColumn key="formatted_date">TANGGAL</TableColumn>
+                            <TableColumn key="status">STATUS</TableColumn>
+                            <TableColumn key="score">PRIORITAS</TableColumn>
+                            <TableColumn key="action">ACTION</TableColumn>
+
+                        </TableHeader>
+                        <TableBody items={items}>
+                            {(item: any) => (
+                                <TableRow key={item?._id}>
+                                    {(columnKey) => (
+                                        <TableCell>
+                                            {columnKey === 'action' ? (
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => openModalSend(item)}
+                                                        className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
+                                                    >
+                                                        MANAGE
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openModalDelete(item)}
+                                                        className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm"
+                                                    >
+                                                        DELETE
+                                                    </button>
+                                                </div>
+                                            ) : columnKey === 'score' ? (
+                                                <p>{rounded(Number(getKeyValue(item, columnKey)), 2)}</p>
+                                            ) : columnKey === 'status' ? (
+                                                <p className={`${getStatusColor(item?.status)}`}>{item?.status}</p>
+                                            )
+                                                : (
+                                                    getKeyValue(item, columnKey)
+                                                )}
+
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>)}
+
+
             </div>
 
 
