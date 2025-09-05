@@ -4,6 +4,7 @@ import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser 
 import ModalDefault from '@/components/fragments/modal/modal';
 import ModalAlert from '@/components/fragments/modal/modalAlert';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
+import { useAuth } from '@/hook/AuthContext';
 import { formatDate, formatTanggalToIndo } from '@/utils/helper';
 import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
 import axios from 'axios';
@@ -15,6 +16,7 @@ import toast from 'react-hot-toast';
 import { IoSearch } from 'react-icons/io5';
 const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const Page = () => {
+    const { role } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
@@ -235,60 +237,104 @@ const Page = () => {
                 />
 
             </div>
-            <Table
-                aria-label="Daftar Permintaan Surat"
-                bottomContent={
-                    <div className="flex w-full justify-center">
-                        <Pagination
-                            isCompact
-                            showControls
-                            showShadow
-                            color="secondary"
-                            page={page}
-                            total={pages}
-                            onChange={(newPage) => setPage(newPage)}
-                        />
-                    </div>
-                }
-                classNames={{
-                    th: 'text-white bg-black',
-                    wrapper: 'min-h-[222px] bg-[#16181a] text-white',
-                }}
-            >
-                <TableHeader>
-                    <TableColumn key="name">NAME</TableColumn>
-                    <TableColumn key="type">KATEGORI SURAT</TableColumn>
-                    <TableColumn key="title">JUDUL SURAT</TableColumn>
-                    <TableColumn key="formatted_date">TANGGAL</TableColumn>
-                    <TableColumn key="status">STATUS</TableColumn>
-                    <TableColumn key="action">ACTION</TableColumn>
+            {role !== 'admin' ? (
+                <Table
+                    aria-label="Daftar Permintaan Surat"
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                isCompact
+                                showControls
+                                showShadow
+                                color="secondary"
+                                page={page}
+                                total={pages}
+                                onChange={(newPage) => setPage(newPage)}
+                            />
+                        </div>
+                    }
+                    classNames={{
+                        th: 'text-white bg-black',
+                        wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                    }}
+                >
+                    <TableHeader>
+                        <TableColumn key="name">NAME</TableColumn>
+                        <TableColumn key="type">KATEGORI SURAT</TableColumn>
+                        <TableColumn key="title">JUDUL SURAT</TableColumn>
+                        <TableColumn key="formatted_date">TANGGAL</TableColumn>
+                        <TableColumn key="status">STATUS</TableColumn>
 
-                </TableHeader>
-                <TableBody items={items}>
-                    {(item: any) => (
-                        <TableRow key={item?._id}>
-                            {(columnKey) => (
-                                <TableCell>
-                                    {columnKey === 'action' ? (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
-                                                MANAGE
-                                            </button>
-                                            <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
-                                                DELETE
-                                            </button>
-                                        </div>
-                                    ) :
-                                        (
-                                            getKeyValue(item, columnKey)
-                                        )}
+                    </TableHeader>
+                    <TableBody items={items}>
+                        {(item: any) => (
+                            <TableRow key={item?._id}>
+                                {(columnKey) => (
+                                    <TableCell>
+                                        {getKeyValue(item, columnKey)}
+                                    </TableCell>
+                                )}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            ) : (
+                <Table
+                    aria-label="Daftar Permintaan Surat"
+                    bottomContent={
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                isCompact
+                                showControls
+                                showShadow
+                                color="secondary"
+                                page={page}
+                                total={pages}
+                                onChange={(newPage) => setPage(newPage)}
+                            />
+                        </div>
+                    }
+                    classNames={{
+                        th: 'text-white bg-black',
+                        wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                    }}
+                >
+                    <TableHeader>
+                        <TableColumn key="name">NAME</TableColumn>
+                        <TableColumn key="type">KATEGORI SURAT</TableColumn>
+                        <TableColumn key="title">JUDUL SURAT</TableColumn>
+                        <TableColumn key="formatted_date">TANGGAL</TableColumn>
+                        <TableColumn key="status">STATUS</TableColumn>
+                        <TableColumn key="action">ACTION</TableColumn>
 
-                                </TableCell>
-                            )}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                    </TableHeader>
+                    <TableBody items={items}>
+                        {(item: any) => (
+                            <TableRow key={item?._id}>
+                                {(columnKey) => (
+                                    <TableCell>
+                                        {columnKey === 'action' ? (
+                                            <div className="flex gap-2">
+                                                <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
+                                                    MANAGE
+                                                </button>
+                                                <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
+                                                    DELETE
+                                                </button>
+                                            </div>
+                                        ) :
+                                            (
+                                                getKeyValue(item, columnKey)
+                                            )}
+
+                                    </TableCell>
+                                )}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            )}
+
 
             <ModalDefault className="bg-secondBlack p-6 rounded-xl shadow-xl" isOpen={isOpen} onClose={onClose}>
                 <form onSubmit={handleUpdate} className="text-white space-y-6">
