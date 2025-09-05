@@ -325,7 +325,7 @@ const Page = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <div>
-                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Jenis Surat</label>
+                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Template Surat</label>
                             <Autocomplete
                                 className="max-w-xs"
                                 onSelectionChange={(e: any) => onSelectionChange(e)}

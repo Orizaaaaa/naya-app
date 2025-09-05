@@ -96,6 +96,11 @@ const page = (props: Props) => {
                 toast.success('Kategori berhasil diperbarui!', { id: toastId });
                 fetchData();
                 onCloseUpdate();
+                setFormUpdate({
+                    name: '',
+                    description: '',
+                    bobot: '',
+                })
             } else {
                 toast.error('Gagal memperbarui kategori.', { id: toastId });
             }
@@ -113,6 +118,11 @@ const page = (props: Props) => {
                 toast.success('Kategori berhasil disimpan!', { id: toastId })
                 fetchData()
                 onClose()
+                setForm({
+                    name: '',
+                    description: '',
+                    bobot: '',
+                })
             } else {
                 toast.error('Gagal menyimpan kategori.', { id: toastId })
             }
