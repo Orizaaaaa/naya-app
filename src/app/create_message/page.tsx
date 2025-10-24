@@ -262,14 +262,14 @@ function Page() {
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
-                <h1 className="text-3xl font-extrabold text-white mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
-                <button onClick={onOpen} className='cursor-pointer text-white bg-blue-500/30 py-2 px-3 rounded-lg flex items-center gap-2' >
+                <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">EDITOR TEMPLATE SURAT</h1>
+                <button onClick={onOpen} className='cursor-pointer text-gray-800 bg-blue-500/30 py-2 px-3 rounded-lg flex items-center gap-2' >
                     Panduan pembuatan
                     <BsFillInfoCircleFill />
                 </button>
                 <div className="grid grid-cols-2 gap-3 w-full ">
                     <InputForm
-                        className="bg-white rounded-xl "
+                        className="bg-slate-200 rounded-xl "
                         placeholder="Masukkan Nama Surat"
                         type="name"
                         htmlFor="name"
@@ -384,9 +384,9 @@ function Page() {
                     </div>
                 )}
             </div>
-            <ModalDefault className='bg-secondBlack' isOpen={isOpen} onClose={onClose}>
+            <ModalDefault className='bg-white' isOpen={isOpen} onClose={onClose}>
                 <div className="space-y-4">
-                    <h1 className="text-xl font-semibold text-white">📄 Panduan Pembuatan Surat</h1>
+                    <h1 className="text-xl font-semibold text-gray-800">📄 Panduan Pembuatan Surat</h1>
                     <p className="text-sm text-gray-600">
                         Gunakan editor teks untuk membuat surat. Ikuti aturan berikut agar sistem dapat mengenali data dengan benar.
                     </p>
@@ -407,7 +407,7 @@ function Page() {
                             { label: 'NISN siswa', tag: '{nisn}' },
                             { label: 'NIS siswa', tag: '{nis}' },
                         ].map((item, index) => (
-                            <div key={index} className="flex justify-between items-center px-4 py-1 text-sm text-white">
+                            <div key={index} className="flex justify-between items-center px-4 py-1 text-sm text-gray-800">
                                 <span>{index + 1}. {item.label}</span>
                                 <span className="font-mono text-gray-500 text-sm">{item.tag}</span>
                             </div>

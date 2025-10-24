@@ -114,7 +114,7 @@ const Login = () => {
 
 
   return (
-    <div className="login bg-primary">
+    <div className="login bg-white">
       <div className="container mx-auto">
         <div className="flex items-center py-3 cursor-pointer " onClick={() => router.back()}>
           <IoIosArrowBack size={20} color='white' />
@@ -122,7 +122,7 @@ const Login = () => {
         </div>
 
       </div>
-      <div className="container bg-primary mx-auto flex flex-col justify-center items-center  h-[99vh] ">
+      <div className="container bg-white mx-auto flex flex-col justify-center items-center  h-[99vh] ">
         <form className='p-6 bg-[#e9e9e9] w-full md:w-96 rounded-lg m-3 lg:m-0' onSubmit={handleLogin}>
           <div className="logo flex justify-center my-5">
             <Image src={realLogo} alt="logo" width={180} height={130} />

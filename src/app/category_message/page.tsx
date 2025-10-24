@@ -143,7 +143,7 @@ const page = (props: Props) => {
 
             <div className="grid grid-cols-3 gap-4">
                 {data.map((item: any, index: number) => (
-                    <div className="  bg-white rounded-xl shadow-lg overflow-hidden " key={index}>
+                    <div className="  bg-white rounded-xl shadow-xl overflow-hidden " key={index}>
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-4">
                                 <h2 className="text-xl font-bold text-gray-800 truncate">{item.name}</h2>

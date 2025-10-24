@@ -48,10 +48,10 @@ const DropdownUser = () => {
         className="flex items-center gap-4"
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-white ">
+          <span className="block text-sm font-medium text-gray-800 ">
             {name ? capitalizeWords(name) : "User"}
           </span>
-          <span className="block text-xs text-white">
+          <span className="block text-xs text-gray-600">
             {role ? capitalizeWords(role) : "Pengguna"}
           </span>
         </span>

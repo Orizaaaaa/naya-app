@@ -58,27 +58,29 @@ const page = (props: Props) => {
 
     return (
         <DefaultLayout>
-            <h1 className="mt-2 text-white text-2xl mb-3">SEMUA TEMPLATE SURAT </h1>
+            <h1 className="mt-2 text-black  text-2xl mb-3">SEMUA TEMPLATE SURAT </h1>
             <div className="grid grid-cols-4 gap-4">
                 {data?.map((item: any) => (
-                    <SpotlightCard key={item.id} className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
-                        <h1>{item.name}</h1>
-                        <div className="flex mt-4">
-                            <h2 className='bg-blue-500/10 px-3 py-1 rounded-full text-sm' >{item?.category?.name || '-'}</h2>
+                    <div key={item.id} className="custom-spotlight-card shadow-xl bg-white p-3 rounded-xl flex flex-col h-full" >
+                        <div className="flex-grow">
+                            <h1 className='text-black' >{item.name}</h1>
+                            <div className="flex mt-4">
+                                <h2 className='bg-blue-500/10 px-3 py-1 rounded-full text-sm text-black' >{item?.category?.name || '-'}</h2>
+                            </div>
                         </div>
                         {
                             role === 'admin' && (
                                 <div className="grid grid-cols-2 gap-5 mt-5">
-                                    <button onClick={() => router.push(`/all_message/${item.id}`)} className='bg-blue-500/30 cursor-pointer rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
+                                    <button onClick={() => router.push(`/all_message/${item.id}`)} className='bg-blue-500/30 text-white cursor-pointer rounded-lg p-1 flex flex-row justify-center items-center gap-2'>
                                         <LuSquarePen />
                                         <p>Edit</p>
                                     </button>
-                                    <button className='bg-red-900  rounded-lg p-1 cursor-pointer' onClick={() => openModalDelete(item.id)}>Hapus</button>
+                                    <button className='bg-red-900  text-white rounded-lg p-1 cursor-pointer' onClick={() => openModalDelete(item.id)}>Hapus</button>
                                 </div>
                             )
                         }
 
-                    </SpotlightCard>
+                    </div>
                 ))}
             </div>
 

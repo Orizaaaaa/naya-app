@@ -211,7 +211,7 @@ function page({ }: Props) {
     return (
         <DefaultLayout>
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
-                <h1 className="text-3xl font-extrabold text-white mb-6 text-center">DETAIL TEMPLATE SURAT</h1>
+                <h1 className="text-3xl font-extrabold text-black mb-6 text-center">DETAIL TEMPLATE SURAT</h1>
                 {!loading ? (
                     <>
                         <div className="grid grid-cols-2 gap-3 w-full items-center ">

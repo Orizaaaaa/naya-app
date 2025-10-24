@@ -6,7 +6,7 @@ import ModalAlert from '@/components/fragments/modal/modalAlert';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
 import { useAuth } from '@/hook/AuthContext';
 import { formatDate, formatTanggalToIndo } from '@/utils/helper';
-import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, getKeyValue, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, DatePicker } from '@heroui/react';
 import axios from 'axios';
 import { log } from 'console';
 import { i } from 'framer-motion/client';
@@ -18,6 +18,7 @@ const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 const Page = () => {
     const { role } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
+    const [dateFilter, setDateFilter] = useState<any>(null);
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
@@ -43,10 +44,20 @@ const Page = () => {
 
 
     const filteredData = React.useMemo(() => {
-        return data.filter((item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [data, searchTerm]);
+        return data.filter((item) => {
+            const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+            
+            // Filter berdasarkan tanggal jika ada
+            let matchDate = true;
+            if (dateFilter) {
+                const itemDate = new Date(item.date);
+                const filterDate = new Date(dateFilter.year, dateFilter.month - 1, dateFilter.day);
+                matchDate = itemDate.toDateString() === filterDate.toDateString();
+            }
+            
+            return matchSearch && matchDate;
+        });
+    }, [data, searchTerm, dateFilter]);
 
     const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -225,17 +236,42 @@ const Page = () => {
 
     return (
         <DefaultLayout>
-            <h1 className="mt-2 text-white text-2xl mb-3">PERMINTAAN SURAT SISWA</h1>
-            <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom" >
+            <h1 className="mt-2 text-black text-2xl mb-3">PERMINTAAN SURAT SISWA</h1>
+            <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-gray-300/30 my-4 border-2 border-gray-300 bg-white" >
                 <IoSearch color="#2c80fd" size={20} />
                 <input
                     placeholder="SEARCH"
-                    className=" border-none w-full text-white placeholder-gray-500 outline-none focus:ring-0 bg-transparent"
+                    className=" border-none w-full text-gray-800 placeholder-gray-500 outline-none focus:ring-0 bg-transparent"
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
 
+            </div>
+            
+            {/* Filter berdasarkan tanggal */}
+            <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-2">
+                    <div>
+                   
+                    <DatePicker
+                      size='sm'
+                       label='Filter Tanggal'
+                        value={dateFilter}
+                        onChange={setDateFilter}
+                        className="max-w-xs"
+                    />
+                    </div>
+                   
+                    {dateFilter && (
+                        <button
+                            onClick={() => setDateFilter(null)}
+                            className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                            Clear
+                        </button>
+                    )}
+                </div>
             </div>
             {role !== 'admin' ? (
                 <Table
@@ -254,8 +290,8 @@ const Page = () => {
                         </div>
                     }
                     classNames={{
-                        th: 'text-white bg-black',
-                        wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                        th: 'text-gray-800 bg-white border-b border-gray-300',
+                        wrapper: 'min-h-[222px] bg-white text-gray-800 border border-gray-300',
                     }}
                 >
                     <TableHeader>
@@ -295,8 +331,8 @@ const Page = () => {
                         </div>
                     }
                     classNames={{
-                        th: 'text-white bg-black',
-                        wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                        th: 'text-gray-800 bg-white border-b border-gray-300',
+                        wrapper: 'min-h-[222px] bg-white text-gray-800 border border-gray-300',
                     }}
                 >
                     <TableHeader>
@@ -315,10 +351,10 @@ const Page = () => {
                                     <TableCell>
                                         {columnKey === 'action' ? (
                                             <div className="flex gap-2">
-                                                <button onClick={() => openModalSend(item)} className="bg-blue-900 text-white cursor-pointer px-3 py-2 rounded-lg text-sm ">
+                                                <button onClick={() => openModalSend(item)} className="bg-blue-900 text-black cursor-pointer px-3 py-2 rounded-lg text-sm ">
                                                     MANAGE
                                                 </button>
-                                                <button onClick={() => openModalDelete(item)} className="bg-red-800 text-white cursor-pointer px-3 py-2 rounded-lg text-sm  ">
+                                                <button onClick={() => openModalDelete(item)} className="bg-red-800 text-black cursor-pointer px-3 py-2 rounded-lg text-sm  ">
                                                     DELETE
                                                 </button>
                                             </div>
@@ -336,42 +372,42 @@ const Page = () => {
             )}
 
 
-            <ModalDefault className="bg-secondBlack p-6 rounded-xl shadow-xl" isOpen={isOpen} onClose={onClose}>
-                <form onSubmit={handleUpdate} className="text-white space-y-6">
-                    <h1 className="text-2xl font-bold text-center border-b border-white/10 pb-4">
+            <ModalDefault className="bg-white p-6 rounded-xl shadow-xl border border-gray-300" isOpen={isOpen} onClose={onClose}>
+                <form onSubmit={handleUpdate} className="text-gray-800 space-y-6">
+                    <h1 className="text-2xl font-bold text-center border-b border-gray-300 pb-4">
                         📩 Permintaan Surat
                     </h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Nama Surat</p>
+                            <p className="text-sm text-gray-600">Nama Surat</p>
                             <p className="text-lg font-semibold">{form.title}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Kategori Surat</p>
+                            <p className="text-sm text-gray-600">Kategori Surat</p>
                             <p className="text-lg font-semibold">{form.type}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Tanggal Dibutuhkan</p>
+                            <p className="text-sm text-gray-600">Tanggal Dibutuhkan</p>
                             <p className="text-lg font-semibold">{formatTanggalToIndo(form.date)}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Status Saat Ini</p>
+                            <p className="text-sm text-gray-600">Status Saat Ini</p>
                             <p className="text-lg font-semibold">{form.status}</p>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm text-white/60">Deskripsi Siswa</p>
+                            <p className="text-sm text-gray-600">Deskripsi Siswa</p>
                             <p className="text-base">{form.description}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <div>
-                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Template Surat</label>
+                            <label className="block text-sm mb-2 text-gray-700">🔖 Pilih Template Surat</label>
                             <Autocomplete
                                 className="max-w-xs"
                                 onSelectionChange={(e: any) => onSelectionChange(e)}
@@ -384,7 +420,7 @@ const Page = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm mb-2 text-white/70">📌 Ubah Status Surat</label>
+                            <label className="block text-sm mb-2 text-gray-700">📌 Ubah Status Surat</label>
                             <Autocomplete
                                 className="max-w-xs"
                                 onSelectionChange={(e: any) => onSelectionChangeStatus(e)}

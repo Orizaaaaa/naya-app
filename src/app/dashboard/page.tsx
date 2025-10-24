@@ -16,6 +16,7 @@ import {
     Autocomplete,
     AutocompleteItem,
     useDisclosure,
+    DatePicker,
 } from "@heroui/react";
 import { FaSquarePen } from 'react-icons/fa6'
 import CardBar from '@/components/fragments/cardBox/CardBar'
@@ -27,6 +28,7 @@ import ModalAlert from '@/components/fragments/modal/modalAlert'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useAuth } from '@/hook/AuthContext'
+import { parseDate } from '@internationalized/date'
 
 type Props = {}
 
@@ -35,6 +37,7 @@ const page = (props: Props) => {
     const [id, setId] = React.useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<'Semua' | 'Menunggu'>('Menunggu');
+    const [dateFilter, setDateFilter] = useState<any>(null);
 
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
@@ -63,9 +66,18 @@ const page = (props: Props) => {
         return data.filter((item) => {
             const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
             const matchStatus = statusFilter === 'Semua' || item.status === statusFilter;
-            return matchSearch && matchStatus;
+            
+            // Filter berdasarkan tanggal jika ada
+            let matchDate = true;
+            if (dateFilter) {
+                const itemDate = new Date(item.date);
+                const filterDate = new Date(dateFilter.year, dateFilter.month - 1, dateFilter.day);
+                matchDate = itemDate.toDateString() === filterDate.toDateString();
+            }
+            
+            return matchSearch && matchStatus && matchDate;
         });
-    }, [data, searchTerm, statusFilter]);
+    }, [data, searchTerm, statusFilter, dateFilter]);
 
 
     const pages = Math.ceil(filteredData.length / rowsPerPage);
@@ -277,12 +289,12 @@ const page = (props: Props) => {
                 </div>
 
 
-                <h1 className='mt-16 text-white text-2xl mb-3 ' >PERMINTAAN SURAT SISWA</h1>
-                <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom" >
+                <h1 className='mt-16 text-black text-2xl mb-3 ' >PERMINTAAN SURAT SISWA</h1>
+                <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-gray-300/30 my-4 border-2 border-gray-300 bg-white" >
                     <IoSearch color="#2c80fd" size={20} />
                     <input
                         placeholder="SEARCH"
-                        className=" border-none w-full text-white placeholder-gray-500 outline-none focus:ring-0 bg-transparent"
+                        className=" border-none w-full text-gray-800 placeholder-gray-500 outline-none focus:ring-0 bg-transparent"
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -290,22 +302,42 @@ const page = (props: Props) => {
 
                 </div>
 
-                {/* filter berdasarkan status yang default adalah status menunggu,  */}
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setStatusFilter('Semua')}
-                        className={`px-3 py-2 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom
-            ${statusFilter === 'Semua' ? 'bg-blue-700 text-white' : 'bg-secondBlack text-white'}`}
-                    >
-                        Semua
-                    </button>
-                    <button
-                        onClick={() => setStatusFilter('Menunggu')}
-                        className={`px-3 py-2 rounded-lg shadow-lg shadow-black/30 my-4 border-2 border-grayCustom
-            ${statusFilter === 'Menunggu' ? 'bg-blue-700 text-white' : 'bg-secondBlack text-white'}`}
-                    >
-                        Menunggu
-                    </button>
+                {/* filter berdasarkan status dan tanggal */}
+                <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setStatusFilter('Semua')}
+                            className={`px-3 py-2 rounded-lg shadow-lg shadow-gray-300/30 my-4 border-2 border-gray-300
+                ${statusFilter === 'Semua' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-800'}`}
+                        >
+                            Semua
+                        </button>
+                        <button
+                            onClick={() => setStatusFilter('Menunggu')}
+                            className={`px-3 py-2 rounded-lg shadow-lg shadow-gray-300/30 my-4 border-2 border-gray-300
+                ${statusFilter === 'Menunggu' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-800'}`}
+                        >
+                            Menunggu
+                        </button>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                        <DatePicker
+                            value={dateFilter}
+                            onChange={setDateFilter}
+                            className="max-w-xs"
+                            size='sm'
+                            label='Filter Tanggal'
+                        />
+                        {dateFilter && (
+                            <button
+                                onClick={() => setDateFilter(null)}
+                                className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {role !== 'admin' ? (
@@ -325,8 +357,8 @@ const page = (props: Props) => {
                             </div>
                         }
                         classNames={{
-                            th: 'text-white bg-black',
-                            wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                            th: 'text-gray-800 bg-white border-b border-gray-300',
+                            wrapper: 'min-h-[222px] bg-white text-gray-800 border border-gray-300',
                         }}
                     >
                         <TableHeader>
@@ -375,8 +407,8 @@ const page = (props: Props) => {
                             </div>
                         }
                         classNames={{
-                            th: 'text-white bg-black',
-                            wrapper: 'min-h-[222px] bg-[#16181a] text-white',
+                            th: 'text-gray-800 bg-white border-b border-gray-300',
+                            wrapper: 'min-h-[222px] bg-white text-gray-800 border border-gray-300',
                         }}
                     >
                         <TableHeader>
@@ -429,42 +461,42 @@ const page = (props: Props) => {
             </div>
 
 
-            <ModalDefault className="bg-secondBlack p-6 rounded-xl shadow-xl" isOpen={isOpen} onClose={onClose}>
-                <form onSubmit={handleUpdate} className="text-white space-y-6">
-                    <h1 className="text-2xl font-bold text-center border-b border-white/10 pb-4">
+            <ModalDefault className="bg-white p-6 rounded-xl shadow-xl border border-gray-300" isOpen={isOpen} onClose={onClose}>
+                <form onSubmit={handleUpdate} className="text-gray-800 space-y-6">
+                    <h1 className="text-2xl font-bold text-center border-b border-gray-300 pb-4">
                         📩 Permintaan Surat
                     </h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Nama Surat</p>
+                            <p className="text-sm text-gray-600">Nama Surat</p>
                             <p className="text-lg font-semibold">{form.title}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Kategori Surat</p>
+                            <p className="text-sm text-gray-600">Kategori Surat</p>
                             <p className="text-lg font-semibold">{form.type}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Tanggal Dibutuhkan</p>
+                            <p className="text-sm text-gray-600">Tanggal Dibutuhkan</p>
                             <p className="text-lg font-semibold">{formatTanggalToIndo(form.date)}</p>
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-sm text-white/60">Status Saat Ini</p>
+                            <p className="text-sm text-gray-600">Status Saat Ini</p>
                             <p className="text-lg font-semibold">{form.status}</p>
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <p className="text-sm text-white/60">Deskripsi Siswa</p>
+                            <p className="text-sm text-gray-600">Deskripsi Siswa</p>
                             <p className="text-base">{form.description}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                         <div>
-                            <label className="block text-sm mb-2 text-white/70">🔖 Pilih Template Surat</label>
+                            <label className="block text-sm mb-2 text-gray-700">🔖 Pilih Template Surat</label>
                             <Autocomplete
                                 className="max-w-xs"
                                 onSelectionChange={(e: any) => onSelectionChange(e)}
@@ -477,7 +509,7 @@ const page = (props: Props) => {
                         </div>
 
                         <div>
-                            <label className="block text-sm mb-2 text-white/70">📌 Ubah Status Surat</label>
+                            <label className="block text-sm mb-2 text-gray-700">📌 Ubah Status Surat</label>
                             <Autocomplete
                                 className="max-w-xs"
                                 onSelectionChange={(e: any) => onSelectionChangeStatus(e)}
