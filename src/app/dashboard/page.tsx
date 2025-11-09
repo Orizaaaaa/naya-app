@@ -19,16 +19,20 @@ import {
     DatePicker,
 } from "@heroui/react";
 import { FaSquarePen } from 'react-icons/fa6'
+import { MdDownload } from 'react-icons/md'
 import CardBar from '@/components/fragments/cardBox/CardBar'
 import { IoSearch } from 'react-icons/io5'
 import ModalDefault from '@/components/fragments/modal/modal'
-import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser } from '@/api/method'
+import { deleteRequest, getAllRequestMessage, getAllTemplate, updateRequestUser, getRequestSummary } from '@/api/method'
 import { formatTanggalToIndo, getStatusColor } from '@/utils/helper'
 import ModalAlert from '@/components/fragments/modal/modalAlert'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useAuth } from '@/hook/AuthContext'
 import { parseDate } from '@internationalized/date'
+// Import jsPDF and jspdf-autotable
+import { jsPDF } from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 type Props = {}
 
@@ -41,6 +45,9 @@ const page = (props: Props) => {
 
     const { isOpen: isWarningOpen, onOpen: onWarningOpen, onClose: onWarningClose } = useDisclosure();
     const { onOpen, onClose, isOpen } = useDisclosure();
+    const { isOpen: isExportOpen, onOpen: onExportOpen, onClose: onExportClose } = useDisclosure();
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const printRef = useRef<HTMLDivElement>(null);       // Untuk PDF preview
     const measurementRef = useRef<HTMLDivElement>(null); // Untuk pengukuran tinggi konten
     const [filledTemplate, setFilledTemplate] = useState<string>('');
@@ -253,6 +260,200 @@ const page = (props: Props) => {
         }
     };
 
+    const generatePDFTable = (summaryData: any) => {
+        console.log('Generating PDF table with data:', summaryData);
+        const { year, data: summary } = summaryData;
+        
+        if (!summary || !Array.isArray(summary)) {
+            console.error('Invalid summary data structure:', summary);
+            return '<div>Error: Data tidak valid</div>';
+        }
+        
+        let tableHTML = `
+            <div style="font-family: 'Times New Roman', serif; padding: 10px 20px; background-color: white; margin: 0;">
+                <h1 style="text-align: center; margin: 10px 0 20px 0; font-size: 20px; font-weight: bold; color: #000;">
+                    LAPORAN PERMINTAAN SURAT TAHUN ${year}
+                </h1>
+                <table style="width: 100%; border-collapse: collapse; margin: 0; border: 1px solid #000;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: #000; font-size: 11pt;">Bulan</th>
+                            <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: #000; font-size: 11pt;">Kategori Surat</th>
+                            <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: #000; font-size: 11pt;">Total Permintaan</th>
+                            <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: #000; font-size: 11pt;">Total Selesai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        summary.forEach((monthData: any, monthIndex: number) => {
+            console.log(`Processing month ${monthIndex + 1}:`, monthData);
+            
+            if (monthData.categories && Array.isArray(monthData.categories) && monthData.categories.length > 0) {
+                monthData.categories.forEach((category: any, index: number) => {
+                    const monthCell = index === 0 
+                        ? `<td rowspan="${monthData.categories.length}" style="border: 1px solid #000; padding: 8px; text-align: center; vertical-align: middle; color: #000; font-weight: normal; font-size: 10pt;">${monthData.month_name || 'N/A'}</td>`
+                        : '';
+                    
+                    tableHTML += `
+                        <tr style="background-color: ${index % 2 === 0 ? '#ffffff' : '#f9f9f9'};">
+                            ${monthCell}
+                            <td style="border: 1px solid #000; padding: 8px; color: #000; font-weight: normal; font-size: 10pt;">${String(category.category_name || 'N/A')}</td>
+                            <td style="border: 1px solid #000; padding: 8px; text-align: center; color: #000; font-weight: normal; font-size: 10pt;">${String(category.total_request || 0)}</td>
+                            <td style="border: 1px solid #000; padding: 8px; text-align: center; color: #000; font-weight: normal; font-size: 10pt;">${String(category.total_done || 0)}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tableHTML += `
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: 1px solid #000; padding: 8px; text-align: center; color: #000; font-weight: normal; font-size: 10pt;">${monthData.month_name || 'N/A'}</td>
+                        <td style="border: 1px solid #000; padding: 8px; text-align: center; color: #666; font-style: italic; font-size: 10pt;" colspan="3">Tidak ada data</td>
+                    </tr>
+                `;
+            }
+        });
+
+        tableHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        console.log('Generated table HTML length:', tableHTML.length);
+        return tableHTML;
+    };
+
+    const handleExportPDF = async () => {
+        if (!selectedYear) {
+            toast.error('Pilih tahun terlebih dahulu!');
+            return;
+        }
+
+        setIsGeneratingPDF(true);
+        const toastId = toast.loading('Mengambil data dan membuat PDF...');
+
+        try {
+            const summaryData = await getRequestSummary(selectedYear);
+            console.log('Summary data received:', summaryData);
+            
+            if (!summaryData || !summaryData.data) {
+                console.error('Invalid summary data:', summaryData);
+                toast.error('Gagal mengambil data summary.', { id: toastId });
+                setIsGeneratingPDF(false);
+                return;
+            }
+
+            // Create new PDF document
+            // jsPDF and jspdf-autotable are already imported at top level
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            });
+
+            // Add title
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`LAPORAN PERMINTAAN SURAT TAHUN ${summaryData.year}`, 105, 15, { align: 'center' });
+
+            // Prepare table data
+            const tableData: any[] = [];
+            const { data: summary } = summaryData;
+
+            summary.forEach((monthData: any) => {
+                if (monthData.categories && Array.isArray(monthData.categories) && monthData.categories.length > 0) {
+                    monthData.categories.forEach((category: any, index: number) => {
+                        if (index === 0) {
+                            // First row of the month - include month name
+                            tableData.push([
+                                monthData.month_name || 'N/A',
+                                category.category_name || 'N/A',
+                                category.total_request || 0,
+                                category.total_done || 0,
+                            ]);
+                        } else {
+                            // Subsequent rows - empty month cell for rowspan effect
+                            tableData.push([
+                                '',
+                                category.category_name || 'N/A',
+                                category.total_request || 0,
+                                category.total_done || 0,
+                            ]);
+                        }
+                    });
+                } else {
+                    // Month with no categories
+                    tableData.push([
+                        monthData.month_name || 'N/A',
+                        'Tidak ada data',
+                        '',
+                        '',
+                    ]);
+                }
+            });
+
+            // Add table using jspdf-autotable
+            // autoTable is a function, not a method
+            autoTable(doc, {
+                head: [['Bulan', 'Kategori Surat', 'Total Permintaan', 'Total Selesai']],
+                body: tableData,
+                startY: 25,
+                margin: { top: 20, left: 10, right: 10 },
+                styles: {
+                    font: 'helvetica',
+                    fontSize: 9,
+                    cellPadding: 3,
+                },
+                headStyles: {
+                    fillColor: [240, 240, 240],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold',
+                    halign: 'center',
+                },
+                bodyStyles: {
+                    textColor: [0, 0, 0],
+                },
+                columnStyles: {
+                    0: { halign: 'center', cellWidth: 30 },
+                    1: { halign: 'left', cellWidth: 80 },
+                    2: { halign: 'center', cellWidth: 35 },
+                    3: { halign: 'center', cellWidth: 35 },
+                },
+                alternateRowStyles: {
+                    fillColor: [249, 249, 249],
+                },
+                didParseCell: (data: any) => {
+                    // Handle rowspan for month column - merge empty cells with previous month cell
+                    if (data.column.index === 0 && data.cell.text[0] === '') {
+                        // Find the previous non-empty cell in the same column
+                        let prevRowIndex = data.row.index - 1;
+                        while (prevRowIndex >= 0) {
+                            const prevCell = data.table.body[prevRowIndex][0];
+                            if (prevCell && prevCell !== '') {
+                                // Merge this cell with the previous one
+                                data.cell.text = [''];
+                                return;
+                            }
+                            prevRowIndex--;
+                        }
+                    }
+                },
+            });
+
+            // Save PDF
+            doc.save(`Laporan_Permintaan_Surat_${selectedYear}.pdf`);
+            
+            toast.success('PDF berhasil diunduh!', { id: toastId });
+            onExportClose();
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast.error('Gagal membuat PDF.', { id: toastId });
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
 
     const jumlahSurat = templates.length.toString(); // Mengubah menjadi string
     const suratBelumDisetujui = data.filter((item) => item.status !== 'Selesai').length.toString(); // Mengubah menjadi string
@@ -289,7 +490,16 @@ const page = (props: Props) => {
                 </div>
 
 
-                <h1 className='mt-16 text-black text-2xl mb-3 ' >PERMINTAAN SURAT SISWA</h1>
+                <div className="flex justify-between items-center mt-16 mb-3">
+                    <h1 className='text-black text-2xl'>PERMINTAAN SURAT SISWA</h1>
+                    <button
+                        onClick={onExportOpen}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-lg"
+                    >
+                        <MdDownload size={20} />
+                        Export PDF
+                    </button>
+                </div>
                 <div className="flex w-full px-3 py-2 items-center gap-3 rounded-lg shadow-lg shadow-gray-300/30 my-4 border-2 border-gray-300 bg-white" >
                     <IoSearch color="#2c80fd" size={20} />
                     <input
@@ -550,6 +760,66 @@ const page = (props: Props) => {
                 </div>
             </ModalAlert>
 
+            <ModalDefault className="bg-white p-6 rounded-xl shadow-xl border border-gray-300" isOpen={isExportOpen} onClose={onExportClose}>
+                <div className="text-gray-800 space-y-6">
+                    <h1 className="text-2xl font-bold text-center border-b border-gray-300 pb-4">
+                        📊 Export Laporan PDF
+                    </h1>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm mb-2 text-gray-700 font-semibold">
+                                Pilih Tahun
+                            </label>
+                            <input
+                                type="number"
+                                min="2020"
+                                max={new Date().getFullYear() + 1}
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(parseInt(e.target.value) || new Date().getFullYear())}
+                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-gray-800"
+                                placeholder="Masukkan tahun"
+                            />
+                        </div>
+
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <p className="text-sm text-blue-800">
+                                <strong>Info:</strong> PDF akan berisi laporan permintaan surat per bulan dengan detail kategori surat, total permintaan, dan total selesai untuk tahun {selectedYear}.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 mt-8">
+                        <button
+                            type="button"
+                            onClick={handleExportPDF}
+                            disabled={isGeneratingPDF}
+                            className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition px-6 py-2 rounded-lg text-white text-sm shadow flex items-center gap-2"
+                        >
+                            {isGeneratingPDF ? (
+                                <>
+                                    <span className="animate-spin">⏳</span>
+                                    Memproses...
+                                </>
+                            ) : (
+                                <>
+                                    <MdDownload size={18} />
+                                    Export PDF
+                                </>
+                            )}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onExportClose}
+                            disabled={isGeneratingPDF}
+                            className="bg-red-700 hover:bg-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition px-4 py-2 rounded-lg text-white text-sm shadow"
+                        >
+                            ❌ BATAL
+                        </button>
+                    </div>
+                </div>
+            </ModalDefault>
+
 
             <div className="p-4 space-y-6 max-w-4xl mx-auto">
                 {filledTemplate && (
@@ -557,7 +827,7 @@ const page = (props: Props) => {
                         {/* Pratinjau A4 yang terlihat */}
                         <div
                             ref={printRef}
-                            className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-lg-md overflow-hidden"
+                            className="a4-page-preview mx-auto bg-white text-black shadow-lg rounded-lg-md "
                             style={{
                                 position: 'relative',
                                 zIndex: -9999, // paling bawah
@@ -588,8 +858,7 @@ const page = (props: Props) => {
                                 fontFamily: 'Times New Roman, serif',
                                 lineHeight: '1.5',
                                 fontSize: '12pt',
-                                overflow: 'hidden', // Penting agar scrollHeight akurat
-                                visibility: 'hidden', // Sembunyikan tapi tetap render
+                
                                 height: 'auto', // Biarkan tingginya menyesuaikan konten
                             }}
                             dangerouslySetInnerHTML={{ __html: filledTemplate }}

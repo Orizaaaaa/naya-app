@@ -152,3 +152,16 @@ export const updateCategory = async (id: any, form: any) => {
         throw err;
     }
 }
+
+export const getRequestSummary = async (year: number) => {
+    try {
+        const result = await axiosInterceptor.get(`/request/summary`, {
+            params: { year }
+        });
+        console.log(result.data);
+        return result.data; // ✅ return data langsung
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
