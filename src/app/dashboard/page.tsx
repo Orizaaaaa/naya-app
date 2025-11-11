@@ -33,6 +33,17 @@ import { parseDate } from '@internationalized/date'
 // Import jsPDF and jspdf-autotable
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
+// Import recharts for chart visualization
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts'
 
 type Props = {}
 
@@ -56,6 +67,9 @@ const page = (props: Props) => {
     const [templates, setTemplate] = useState<any[]>([])
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 4;
+    const [summaryData, setSummaryData] = useState<any>(null);
+    const [chartYear, setChartYear] = useState<number>(new Date().getFullYear());
+    const [isLoadingChart, setIsLoadingChart] = useState(false);
     const [form, setForm] = useState({
         _id: "",
         title: "",
@@ -128,10 +142,32 @@ const page = (props: Props) => {
         }
     };
 
+    const fetchSummaryData = async (year: number) => {
+        setIsLoadingChart(true);
+        try {
+            const res = await getRequestSummary(year);
+            setSummaryData(res);
+        } catch (error) {
+            console.error('Gagal fetch summary data:', error);
+            toast.error('Gagal mengambil data summary untuk chart');
+        } finally {
+            setIsLoadingChart(false);
+        }
+    };
+
     useEffect(() => {
         fetchDatTemplate();
         fetchData();
+        fetchSummaryData(chartYear);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (chartYear) {
+            fetchSummaryData(chartYear);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chartYear]);
 
 
     // ========================
@@ -468,9 +504,24 @@ const page = (props: Props) => {
         return Math.round(value * factor) / factor;
     };
 
+    // Process summary data for charts
+    const processChartData = () => {
+        if (!summaryData || !summaryData.data) return [];
 
+        return summaryData.data.map((monthData: any) => {
+            const totalRequest = monthData.categories?.reduce((sum: number, cat: any) => sum + (cat.total_request || 0), 0) || 0;
+            const totalDone = monthData.categories?.reduce((sum: number, cat: any) => sum + (cat.total_done || 0), 0) || 0;
+            
+            return {
+                month: monthData.month_name || 'N/A',
+                totalRequest,
+                totalDone,
+                pending: totalRequest - totalDone,
+            };
+        });
+    };
 
-    ; // hasil: 0.09
+    const chartData = processChartData();
 
     console.log('tempates', templates);
     console.log('role', role);
@@ -489,6 +540,86 @@ const page = (props: Props) => {
                     <CardBar className='bg-[#7828c7]' text='Siswa yang sudah di atasi' value={siswaSelesai} icon={<MdOutlineMessage size={20} color="white" />} />
                 </div>
 
+                {/* Chart Section */}
+                <div className="mt-8 mb-8">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-gray-800">📊 Grafik Permintaan Surat</h2>
+                        <div className="flex items-center gap-2">
+                            <label className="text-sm text-gray-700 font-semibold">Tahun:</label>
+                            <input
+                                type="number"
+                                min="2020"
+                                max={new Date().getFullYear() + 1}
+                                value={chartYear}
+                                onChange={(e) => setChartYear(parseInt(e.target.value) || new Date().getFullYear())}
+                                className="w-24 px-3 py-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 text-gray-800 text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    {isLoadingChart ? (
+                        <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow-lg border border-gray-300">
+                            <div className="text-gray-600">Memuat data chart...</div>
+                        </div>
+                    ) : chartData.length > 0 ? (
+                        <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+                                Permintaan Surat per Bulan ({chartYear})
+                            </h3>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                                    <XAxis 
+                                        dataKey="month" 
+                                        stroke="#6b7280"
+                                        style={{ fontSize: '12px' }}
+                                    />
+                                    <YAxis 
+                                        stroke="#6b7280"
+                                        style={{ fontSize: '12px' }}
+                                    />
+                                    <Tooltip 
+                                        contentStyle={{ 
+                                            backgroundColor: '#fff', 
+                                            border: '1px solid #e5e7eb',
+                                            borderRadius: '8px',
+                                            color: '#1f2937'
+                                        }}
+                                    />
+                                    <Legend />
+                                    <Line 
+                                        type="monotone" 
+                                        dataKey="totalRequest" 
+                                        stroke="#3b82f6" 
+                                        strokeWidth={2}
+                                        name="Total Permintaan"
+                                        dot={{ fill: '#3b82f6', r: 4 }}
+                                    />
+                                    <Line 
+                                        type="monotone" 
+                                        dataKey="totalDone" 
+                                        stroke="#10b981" 
+                                        strokeWidth={2}
+                                        name="Total Selesai"
+                                        dot={{ fill: '#10b981', r: 4 }}
+                                    />
+                                    <Line 
+                                        type="monotone" 
+                                        dataKey="pending" 
+                                        stroke="#f59e0b" 
+                                        strokeWidth={2}
+                                        name="Pending"
+                                        dot={{ fill: '#f59e0b', r: 4 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    ) : (
+                        <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow-lg border border-gray-300">
+                            <div className="text-gray-600">Tidak ada data untuk tahun {chartYear}</div>
+                        </div>
+                    )}
+                </div>
 
                 <div className="flex justify-between items-center mt-16 mb-3">
                     <h1 className='text-black text-2xl'>PERMINTAAN SURAT SISWA</h1>
