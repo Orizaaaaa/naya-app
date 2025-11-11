@@ -221,7 +221,7 @@ const Register = () => {
 
 
     return (
-        <div className="register bg-black min-h-screen flex flex-col"> {/* Added flex-col */}
+        <div className="register  min-h-screen flex flex-col"> {/* Added flex-col */}
             <div className="container mx-auto">
                 <div className="flex items-center py-3 cursor-pointer" onClick={() => router.back()}>
                     <IoIosArrowBack size={20} color='white' />

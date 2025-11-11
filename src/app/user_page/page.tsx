@@ -120,12 +120,12 @@ function page({ }: Props) {
     console.log(form);
 
     return (
-        <div className="bg-black h-screen">
+        <div className=" h-screen">
             <div className="container mx-auto p-5">
                 <button onClick={handleLogout} className='py-2 px-4 bg-gray-700 cursor-pointer rounded-lg text-white flex flex-row justify-center items-center gap-2' >
                     Logout  <RiLogoutCircleLine size={20} />
                 </button>
-                <h1 className='text-white my-9' >SEMUA SURAT YANG ADA</h1>
+                <h1 className='text-black my-9' >SEMUA SURAT YANG ADA</h1>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4  gap-4">
                     {data?.map((item: any) => (
                         <SpotlightCard key={item.id} className="custom-spotlight-card text-white" spotlightColor="rgba(0, 229, 255, 0.2)">
